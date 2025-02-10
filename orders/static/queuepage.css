@@ -1,0 +1,8 @@
+p, h2, .queue-no {
+    text-align: center;
+}
+
+.queue-no {
+    display: block;
+    font-size: 4em;
+}
