@@ -1,11 +1,75 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="th">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Mitr:wght@200;300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/menupage.css">
     <title>Menu Page</title>
 </head>
 <body>
-    <h1>MenuPage Naja</h1>
+    <header>
+        <h1>ร้านไข่เจียวนัมเบอร์วัน</h1>
+    </header>
+    <form action="/queuepage" method="post">
+        <fieldset>
+            <legend>เลือกไส้ (สามารถเลือกได้มากที่สุด 3 ไส้)</legend>
+            <div class="checkbox-group">
+                <div>
+                    <input type="checkbox" name="filling" id="filling-1" value="filling-1">
+                    <label for="filling-1">ไส้ที่ 1</label>
+                </div>
+                <div>
+                    <input type="checkbox" name="filling" id="filling-2" value="filling-2">
+                    <label for="filling-2">ไส้ที่ 2</label>
+                </div>
+                <div>
+                    <input type="checkbox" name="filling" id="filling-3" value="filling-3">
+                    <label for="filling-3">ไส้ที่ 3</label>
+                </div>
+                <div>
+                    <input type="checkbox" name="filling" id="filling-4" value="filling-4">
+                    <label for="filling-4">ไส้ที่ 4</label>
+                </div>
+                <div>
+                    <input type="checkbox" name="filling" id="filling-5" value="filling-5">
+                    <label for="filling-5">ไส้ที่ 5</label>
+                </div>
+                <div>
+                    <input type="checkbox" name="filling" id="filling-6" value="filling-6">
+                    <label for="filling-6">ไส้ที่ 6</label>
+                </div>
+            </div>
+        </fieldset>
+        <fieldset>
+            <legend>เลือกไข่</legend>
+            <div class="checkbox-group">
+                <div>
+                    <input required type="radio" name="egg" id="1-egg" value="1-egg">
+                    <label for="1-egg">1 ฟอง</label>
+                </div>
+                <div>
+                    <input required type="radio" name="egg" id="2-egg" value="2-egg">
+                    <label for="2-egg">2 ฟอง</label>
+                </div>
+                <div>
+                    <input required type="radio" name="egg" id="3-egg" value="3-egg">
+                    <label for="3-egg">3 ฟอง</label>
+                </div>
+            </div>
+        </fieldset>
+        <fieldset>
+            <legend>ตัวเลือกอื่น ๆ</legend>
+            <div class="checkbox-group">
+                <div>
+                    <input type="checkbox" name="box" id="box" value="box">
+                    <label for="box">ใส่กล่อง</label>
+                </div>
+            </div>
+        </fieldset>
+        <div class="button-div"><button type="submit">สั่ง</button></div>
+    </form>
 </body>
 </html>
