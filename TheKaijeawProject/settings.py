@@ -77,12 +77,8 @@ WSGI_APPLICATION = 'TheKaijeawProject.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'kaijeawdatabase',
-        'USER': 'root',
-        'PASSWORD': '@Th15pa55w0rdco01',
-        'HOST':'127.0.0.1',
-        'PORT':'3306',
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': 'db.sqlite3',
     }
 }
 
