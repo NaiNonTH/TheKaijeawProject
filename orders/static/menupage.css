@@ -32,6 +32,10 @@ form legend {
     opacity: 0;
 }
 
+.checkbox-group input:disabled {
+    cursor: not-allowed;
+}
+
 .checkbox-group label {
     display: flex;
     align-items: center;
@@ -49,8 +53,12 @@ form legend {
     height: 1rem;
 }
 
-.checkbox-group input:hover + label {
+.checkbox-group input:not(:disabled):hover + label {
     background: #ffedc8;
+}
+
+.checkbox-group input:disabled + label {
+    opacity: 0.5;
 }
 
 .checkbox-group input:checked + label::before {
