@@ -13,7 +13,7 @@ class Egg(models.Model):
 
 class Order(models.Model):
     queue_number = models.IntegerField()
-    date = models.DateField(auto_now_add=True)
+    date = models.DateTimeField(auto_now_add=True)
     is_takeaway = models.BooleanField(default=False)
     is_completed = models.BooleanField(default=False)
 
