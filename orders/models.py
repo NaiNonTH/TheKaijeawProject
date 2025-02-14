@@ -23,3 +23,7 @@ class Order(models.Model):
     def mark_as_done(self):
         self.is_completed = True
         self.save()
+
+class NoQueueLeftError(Exception): ...
+
+class NoEggAmountSpecifiedError(Exception): ...
