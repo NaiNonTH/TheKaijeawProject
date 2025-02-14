@@ -21,13 +21,22 @@ def queuepage(request: HttpRequest):
         try:
             egg_amount = Egg.objects.get(pk=request.POST['egg'])
 
-            if len(Order.objects.all()) == 0:
+            if len(Order.objects.filter(is_completed=False).all()) == 0:
                 queue_number = 1
                 print(queue_number)
             else:
-                recent_order = Order.objects.latest("date")
+                incompleted_orders = Order.objects.filter(is_completed=False)
+                unavailable_queues = [order.queue_number for order in list(incompleted_orders.all())]
+
                 max_queue_number = 24
-                queue_number = recent_order.queue_number % max_queue_number + 1
+
+                if len(unavailable_queues) == max_queue_number:
+                    raise ValueError
+
+                queue_number = unavailable_queues[-1] % max_queue_number + 1
+
+                while queue_number in unavailable_queues:
+                    queue_number = (queue_number + 1) % max_queue_number
 
             new_order = Order.objects.create(
                 queue_number=queue_number,
