@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.http import HttpRequest, HttpResponse
 
-from .models import Filling, Egg, Order, NoQueueLeftError, NoEggAmountSpecifiedError
+from .models import Filling, Egg, Order, NoQueueLeftError, NoEggAmountSpecifiedError, TooManyFillingsError
 
 # Create your views here.
 
@@ -21,6 +21,11 @@ def queuepage(request: HttpRequest):
         try:
             if "egg" not in request.POST:
                 raise NoEggAmountSpecifiedError
+
+            fillings_list = request.POST.getlist("filling")
+
+            if len(fillings_list) > 3:
+                raise TooManyFillingsError
 
             egg_amount = Egg.objects.get(pk=request.POST['egg'])
 
@@ -46,8 +51,6 @@ def queuepage(request: HttpRequest):
             )
             new_order.save()
 
-            fillings_list = request.POST.getlist("filling")
-
             for filling_name in fillings_list:
                 filling = Filling.objects.get(pk=filling_name)
                 new_order.fillings.add(filling)
@@ -67,6 +70,14 @@ def queuepage(request: HttpRequest):
                 "message": "ท่านไม่ได้ระบุจำนวนไข่"
             }
             
+            return render(request, "error.html", context, status=400)
+        except TooManyFillingsError:
+            context = {
+                "is_error": False,
+                "status_code": 400,
+                "message": "ท่านเลือกไส้เกิน 3 ตัวเลือก"
+            }
+
             return render(request, "error.html", context, status=400)
         except Exception:
             context = {
