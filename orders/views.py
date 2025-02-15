@@ -98,7 +98,7 @@ def queuepage(request: HttpRequest):
         context = {
             "is_error": False,
             "status_code": 405,
-            "message": "Method not Allowed"
+            "message": "ท่านไม่ได้เข้ามาหน้านี้อย่างถูกต้อง"
         }
 
         return render(request, "error.html", context, status=405)
