@@ -23,6 +23,7 @@ def queuepage(request: HttpRequest):
                 raise NoEggAmountSpecifiedError
 
             fillings_list = request.POST.getlist("filling")
+            is_takeaway = "is_takeaway" in request.POST
 
             if len(fillings_list) > 3:
                 raise TooManyFillingsError
@@ -47,7 +48,8 @@ def queuepage(request: HttpRequest):
 
             new_order = Order.objects.create(
                 queue_number=queue_number,
-                egg_amount=egg_amount
+                egg_amount=egg_amount,
+                is_takeaway=is_takeaway
             )
             new_order.save()
 
