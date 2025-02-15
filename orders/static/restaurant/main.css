@@ -1,0 +1,31 @@
+main {
+    padding-bottom: 5rem;
+}
+
+nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    
+    background: #f0f0f0;
+    color: #121212;
+}
+
+nav ul {
+    display: flex;
+    align-items: center;
+
+    list-style: none;
+    padding: 0;
+}
+
+nav li {
+    flex: 1;
+}
+
+nav a {
+    display: block;
+    padding: 1rem;
+    text-align: center;
+}

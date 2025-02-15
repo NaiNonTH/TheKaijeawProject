@@ -1,0 +1,63 @@
+.orders {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(20rem, 1fr));
+    gap: 1rem;
+}
+
+.order {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    grid-template-rows: 1fr auto;
+}
+
+.order > * {
+    border: 1px solid
+}
+
+.order-content {
+    margin: 0;
+    padding: 0.5rem 1rem;
+    list-style: none;
+    
+    border-color: lightgray;
+    border-left: none;
+}
+
+.order-content li {
+    margin: 0.5rem 0;
+}
+
+.order-queue-no {
+    grid-row: span 2;
+    align-self: stretch;
+
+    padding: 0.5em;
+    background: #557bfa;
+    border-color: #3f5499;
+    color: #fff;
+    
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+.order form {
+    border-color: #0000 lightgray lightgray #0000;
+    padding: 0.25rem;
+}
+
+.order form button {
+    display: block;
+    margin-left: auto;
+
+    background: #557bfa;
+    border: 1px solid #3f5499;
+    color: #fff;
+    
+    border-radius: 0.25rem;
+
+    padding: 0.5em 1.5em;
+}
+
+form button:hover {
+    background: #7696ff;
+}
