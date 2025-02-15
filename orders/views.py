@@ -54,6 +54,7 @@ def queuepage(request: HttpRequest):
 
         except NoQueueLeftError:
             context = {
+                "is_error": False,
                 "status_code": 400,
                 "message": "ไม่มีคิวว่าง"
             }
@@ -61,6 +62,7 @@ def queuepage(request: HttpRequest):
             return render(request, "error.html", context, status=400)
         except NoEggAmountSpecifiedError:
             context = {
+                "is_error": False,
                 "status_code": 400,
                 "message": "ท่านไม่ได้ระบุจำนวนไข่"
             }
@@ -68,6 +70,7 @@ def queuepage(request: HttpRequest):
             return render(request, "error.html", context, status=400)
         except Exception:
             context = {
+                "is_error": True,
                 "status_code": 500,
                 "message": "เกิดข้อผิดพลาดโดยไม่ทราบสาเหตุในระบบ"
             }
@@ -82,6 +85,7 @@ def queuepage(request: HttpRequest):
         return render(request, "queuepage.html", context)
     else:
         context = {
+            "is_error": False,
             "status_code": 405,
             "message": "Method not Allowed"
         }

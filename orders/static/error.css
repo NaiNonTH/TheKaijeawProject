@@ -5,3 +5,32 @@ h2, p {
 h2 {
     font-size: 3em;
 }
+
+.icon img {
+    display: block;
+    margin: 1.5rem auto;
+    width: 8rem;
+    height: 8rem;
+}
+
+.button-div {
+    margin: 2rem 0;
+    text-align: center;
+}
+
+.button-div a {
+    background: orange;
+    border: 1px solid #da841c;
+    color: #422400;
+    
+    display: inline-block;
+    border-radius: 0.25rem;
+
+    font-size: 1.25em;
+    padding: 0.5rem 1.5rem;
+    text-decoration: none;
+}
+
+.button-div a:hover {
+    background: #ffc863;
+}
