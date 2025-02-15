@@ -17,7 +17,7 @@ class Order(models.Model):
     is_takeaway = models.BooleanField(default=False)
     is_completed = models.BooleanField(default=False)
 
-    fillings = models.ManyToManyField(Filling)
+    fillings = models.ManyToManyField(Filling, blank=True)
     egg_amount = models.ForeignKey(Egg, on_delete=models.DO_NOTHING)
 
     def mark_as_done(self):
