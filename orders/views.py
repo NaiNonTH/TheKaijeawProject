@@ -14,7 +14,7 @@ def menupage(request: HttpRequest):
         "eggs": eggs
     }
 
-    return render(request, "menupage.html", context)
+    return render(request, "customer/menupage.html", context)
 
 def queuepage(request: HttpRequest):
     if request and request.method == "POST":
@@ -95,7 +95,7 @@ def queuepage(request: HttpRequest):
             "price": egg_amount.price
         }
 
-        return render(request, "queuepage.html", context)
+        return render(request, "customer/queuepage.html", context)
     else:
         context = {
             "is_error": False,
@@ -104,3 +104,6 @@ def queuepage(request: HttpRequest):
         }
 
         return render(request, "error.html", context, status=405)
+    
+def orderspage(request: HttpRequest):
+    return render(request, "restaurant/orderspage.html")

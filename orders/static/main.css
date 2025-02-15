@@ -3,11 +3,11 @@ html {
 }
 
 :first-child {
-    margin-top: 0;
+    margin-top: 0 !important;
 }
 
 :last-child {
-    margin-bottom: 0;
+    margin-bottom: 0 !important;
 }
 
 body {
@@ -15,7 +15,6 @@ body {
 }
 
 header {
-    background: orange;
     padding: 1rem;
     text-align: center;
 }
@@ -32,4 +31,13 @@ main {
 
 h1, h2, h3, legend, button, .button {
     font-family: "Mitr", sans-serif;
+}
+
+.customer header {
+    background: orange;
+}
+
+.restaurant header {
+    background: #557bfa;
+    color: #fff;
 }
