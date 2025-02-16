@@ -106,4 +106,10 @@ def queuepage(request: HttpRequest):
         return render(request, "error.html", context, status=405)
     
 def orderspage(request: HttpRequest):
-    return render(request, "restaurant/orderspage.html")
+    orders = list(Order.objects.filter(is_completed=False).all())
+
+    context = {
+        "orders": orders
+    }
+
+    return render(request, "restaurant/orderspage.html", context)
