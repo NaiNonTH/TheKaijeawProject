@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from django.http import HttpRequest, HttpResponse
+from django.http import HttpRequest, HttpResponseRedirect
 
 from .models import Filling, Egg, Order, NoQueueLeftError, NoEggAmountSpecifiedError, TooManyFillingsError
 
@@ -113,3 +113,38 @@ def orderspage(request: HttpRequest):
     }
 
     return render(request, "restaurant/orderspage.html", context)
+
+def mark_order_as_done(request: HttpRequest):
+    if request.method == "POST":
+        try:
+            if "id" not in request.POST:
+                raise Order.DoesNotExist
+
+            Order.objects.get(pk=request.POST['id']).mark_as_done()
+
+            return HttpResponseRedirect("/restaurant/orders")
+        except (Order.DoesNotExist):
+            context = {
+                "is_error": True,
+                "status_code": 400,
+                "message": "ไม่พบคำสั่งซื้อดังกล่าว",
+                "previous_page": "/restaurant/orders" 
+            }
+
+            return render(request, "restaurant/error.html", context, status=400)
+        except Exception:
+            context = {
+                "is_error": True,
+                "status_code": 500,
+                "message": "เกิดข้อผิดพลาดโดยไม่ทราบสาเหตุในระบบ"
+            }
+
+            return render(request, "restaurant/error.html", context, status=500)
+    else:
+        context = {
+            "is_error": False,
+            "status_code": 405,
+            "message": "ท่านไม่ได้เข้ามาหน้านี้อย่างถูกต้อง",
+        }
+
+        return render(request, "restaurant/error.html", context, status=405)

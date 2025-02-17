@@ -39,9 +39,9 @@
                             {% endif %}
                         </li>
                     </ul>
-                    <form action="#" method="post">
+                    <form action="{% url 'mark_order_as_done' %}" method="post">
                         {% csrf_token %}
-                        <input type="hidden" name="id" value="{{  }}">
+                        <input type="hidden" name="id" value="{{ order.pk }}">
                         <button type="submit">เสร็จสิ้น</button>
                     </form>
                 </div>
