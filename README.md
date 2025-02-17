@@ -51,7 +51,13 @@ python -m venv .venv
 pip install -r requirements.txt
 ```
 
-5. รัน server ด้วยคำสั่งนี้
+5. Migrate เพื่อสร้างตารางและฐานข้อมูล
+
+```ps1
+python manage.py migrate
+```
+
+6. รัน server ด้วยคำสั่งนี้
 
 ```ps1
 python manage.py runserver
