@@ -17,7 +17,7 @@
         <h1>ร้านไข่เจียวนัมเบอร์วัน</h1>
     </header>
     <main>
-        <form action="/queue" method="post">
+        <form action="{% url 'queue_page' %}" method="post">
             <fieldset>
                 <legend>เลือกไส้ (สามารถเลือกได้มากที่สุด 3 ไส้)</legend>
                 <div class="checkbox-group">
