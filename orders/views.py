@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.http import HttpRequest, HttpResponseRedirect
 
-from .models import Filling, Egg, Order, NoQueueLeftError, NoEggAmountSpecifiedError, TooManyFillingsError
+from .models import Filling, Egg, Order, Restaurant, NoQueueLeftError, NoEggAmountSpecifiedError, TooManyFillingsError
 
 # Create your views here.
 
@@ -104,6 +104,19 @@ def queue_page(request: HttpRequest):
         }
 
         return render(request, "customer/error.html", context, status=405)
+    
+def restaurant_menu_page(request: HttpRequest):
+    fillings = list(Filling.objects.all())
+    restaurant = Restaurant.objects.last()
+
+    print(restaurant)
+
+    context = {
+        "fillings": fillings,
+        "restaurant": restaurant
+    }
+
+    return render(request, "restaurant/menupage.html", context)
     
 def orders_page(request: HttpRequest):
     orders = list(Order.objects.filter(is_completed=False).all())
