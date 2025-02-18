@@ -5,7 +5,7 @@ from .models import Filling, Egg, Order, NoQueueLeftError, NoEggAmountSpecifiedE
 
 # Create your views here.
 
-def menupage(request: HttpRequest):
+def menu_page(request: HttpRequest):
     fillings = Filling.objects.all()
     eggs = Egg.objects.all()
 
@@ -16,7 +16,7 @@ def menupage(request: HttpRequest):
 
     return render(request, "customer/menupage.html", context)
 
-def queuepage(request: HttpRequest):
+def queue_page(request: HttpRequest):
     if request and request.method == "POST":
         try:
             if "egg" not in request.POST:
@@ -105,7 +105,7 @@ def queuepage(request: HttpRequest):
 
         return render(request, "error.html", context, status=405)
     
-def orderspage(request: HttpRequest):
+def orders_page(request: HttpRequest):
     orders = list(Order.objects.filter(is_completed=False).all())
 
     context = {
