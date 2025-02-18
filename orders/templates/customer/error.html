@@ -13,9 +13,7 @@
     <title>{{ status_code }} Error</title>
 </head>
 <body class="customer">
-    <header>
-        <h1>ร้านไข่เจียวนัมเบอร์วัน</h1>
-    </header>
+    {% include '../header.html' %}
     <main>
         <div class="icon">
             {% if is_error %}
@@ -30,5 +28,6 @@
             <a href="/" class="button">กลับ</a>
         </div>
     </main>
+    {% include '../footer.html' %}
 </body>
 </html>

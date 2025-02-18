@@ -15,9 +15,7 @@
     <title>Orders Page</title>
 </head>
 <body class="restaurant">
-    <header>
-        <h1>ร้านไข่เจียวนัมเบอร์วัน</h1>
-    </header>
+    {% include '../header.html' %}
     <main>
         <h2>คำสั่งซื้อที่ยังไม่เสร็จ</h2>
         <div class="orders">
@@ -51,12 +49,6 @@
             {% endif %}
         </div>
     </main>
-    <nav>
-        <ul>
-            <li>
-                <a href="#">คำสั่งซื้อ</a>
-            </li>
-        </ul>
-    </nav>
+    {% include '../footer.html' %}
 </body>
 </html>

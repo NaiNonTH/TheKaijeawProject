@@ -24,9 +24,18 @@ header.big {
 }
 
 main {
-    padding: 2rem 1rem;
     max-width: 48rem;
     margin: auto;
+}
+
+main,
+footer {
+    padding: 2rem 1rem;
+}
+
+footer {
+    text-align: center;
+    background: #efefef;
 }
 
 h1, h2, h3, legend, button, .button {

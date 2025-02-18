@@ -13,9 +13,7 @@
     <title>Menu Page</title>
 </head>
 <body class="customer">
-    <header class="big">
-        <h1>ร้านไข่เจียวนัมเบอร์วัน</h1>
-    </header>
+    {% include '../header-big.html' %}
     <main>
         <form action="{% url 'queue_page' %}" method="post">
             <fieldset>
@@ -63,5 +61,6 @@
             <div class="button-div"><button type="submit">สั่ง</button></div>
         </form>
     </main>
+    {% include '../footer.html' %}
 </body>
 </html>

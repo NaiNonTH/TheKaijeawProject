@@ -13,12 +13,11 @@
     <title>Queue Page</title>
 </head>
 <body class="customer">
-    <header>
-        <h1>ร้านไข่เจียวนัมเบอร์วัน</h1>
-    </header>
+    {% include '../header.html' %}
     <main>
         <h2>สั่งอาหารเรียบร้อย</h2>
         <p>หมายเลขคิวของท่านคือ <strong class="queue-no">{{ queue_number }}</strong> โปรด<strong><u>ถ่ายภาพหน้าจอ</u></strong>เก็บหมายเลขคิวไว้ แล้วรอแม่ค้าขานเลขคิวอยู่หน้าร้านเพื่อรับไข่เจียวพร้อมชำระเงิน <strong><u>{{ price }} บาท</u></strong> กับแม่ค้า</p>
     </main>
+    {% include '../footer.html' %}
 </body>
 </html>
