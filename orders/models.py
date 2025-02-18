@@ -1,5 +1,5 @@
 from django.db import models
-
+from django.contrib.auth.hashers import make_password
 # Create your models here.
 
 class Filling(models.Model):
@@ -23,6 +23,22 @@ class Order(models.Model):
     def mark_as_done(self):
         self.is_completed = True
         self.save()
+
+class Restaurant(models.Model):
+    queue_capacity = models.IntegerField()
+    is_opened = models.BooleanField(default=False)
+    passcode = models.CharField(max_length=128)
+    allow_takeaway = models.BooleanField(default=True)
+    
+    def set_passcode(self,raw_passcode):
+        self.passcode = make_password(raw_passcode)
+        self.save()
+
+    def clean_passcode(self):
+        raw_passcode = self.cleaned_data.get('passcode')
+        if raw_passcode:
+            return make_password(raw_passcode)
+        return raw_passcode
 
 class NoQueueLeftError(Exception): ...
 
