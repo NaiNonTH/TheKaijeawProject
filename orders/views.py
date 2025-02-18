@@ -64,7 +64,7 @@ def queue_page(request: HttpRequest):
                 "message": "ไม่มีคิวว่าง"
             }
 
-            return render(request, "error.html", context, status=400)
+            return render(request, "customer/error.html", context, status=400)
         except NoEggAmountSpecifiedError:
             context = {
                 "is_error": False,
@@ -72,7 +72,7 @@ def queue_page(request: HttpRequest):
                 "message": "ท่านไม่ได้ระบุจำนวนไข่"
             }
             
-            return render(request, "error.html", context, status=400)
+            return render(request, "customer/error.html", context, status=400)
         except TooManyFillingsError:
             context = {
                 "is_error": False,
@@ -80,7 +80,7 @@ def queue_page(request: HttpRequest):
                 "message": "ท่านเลือกไส้เกิน 3 ตัวเลือก"
             }
 
-            return render(request, "error.html", context, status=400)
+            return render(request, "customer/error.html", context, status=400)
         except Exception:
             context = {
                 "is_error": True,
@@ -88,7 +88,7 @@ def queue_page(request: HttpRequest):
                 "message": "เกิดข้อผิดพลาดโดยไม่ทราบสาเหตุในระบบ"
             }
 
-            return render(request, "error.html", context, status=500)
+            return render(request, "customer/error.html", context, status=500)
         
         context = {
             "queue_number": queue_number,
@@ -103,7 +103,7 @@ def queue_page(request: HttpRequest):
             "message": "ท่านไม่ได้เข้ามาหน้านี้อย่างถูกต้อง"
         }
 
-        return render(request, "error.html", context, status=405)
+        return render(request, "customer/error.html", context, status=405)
     
 def orders_page(request: HttpRequest):
     orders = list(Order.objects.filter(is_completed=False).all())
