@@ -1,3 +1,9 @@
+:root {
+    --body-bg: #fff;
+    --body-bg-lighter: #d3d3d3;
+    --body-cl: #111;
+}
+
 html {
     font-family: "Noto Sans Thai Looped", sans-serif;
 }
@@ -12,6 +18,22 @@ html {
 
 body {
     margin: 0;
+}
+
+.customer {
+    --theme-bg-lightest: #ffedc8;
+    --theme-bg-lighter: #ffc863;
+    --theme-bg: #ffa500;
+    --theme-bg-darker: #da841c;
+    --theme-cl: #422400;
+}
+
+.restaurant {
+    --theme-bg-lightest: #d6dfff;
+    --theme-bg-lighter: #3054cc;
+    --theme-bg: #062FB7;
+    --theme-bg-darker: #071c5f;
+    --theme-cl: #fff;
 }
 
 header {
@@ -42,11 +64,7 @@ h1, h2, h3, legend, button, .button {
     font-family: "Mitr", sans-serif;
 }
 
-.customer header {
-    background: orange;
-}
-
-.restaurant header {
-    background: #557bfa;
-    color: #fff;
+header {
+    background: var(--theme-bg);
+    color: var(--theme-cl);
 }

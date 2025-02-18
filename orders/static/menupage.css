@@ -1,0 +1,84 @@
+form > * {
+    margin: 2rem 0;
+}
+
+form fieldset {
+    padding: 0;
+    border: none;
+}
+
+form legend {
+    font-size: 1.125em;
+    margin: 0.5rem 0;
+}
+
+.checkbox-group {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr));
+    gap: 0.5rem;
+}
+
+.checkbox-group div {
+    position: relative;
+    
+    -webkit-user-select: none;
+    user-select: none;
+}
+
+.checkbox-group input {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    opacity: 0;
+}
+
+.checkbox-group input:disabled {
+    cursor: not-allowed;
+}
+
+.checkbox-group label {
+    display: flex;
+    align-items: center;
+    gap: 1ch;
+    
+    padding: 0.5rem 1rem;
+    border: 1px solid var(--body-bg-lighter);
+}
+
+.checkbox-group label::before {
+    content: "";
+    display: block;
+    border: 1px solid var(--body-bg-lighter);
+    width: 1rem;
+    height: 1rem;
+}
+
+.checkbox-group input:not(:disabled):hover + label {
+    background: var(--theme-bg-lightest);
+}
+
+.checkbox-group input:disabled + label {
+    opacity: 0.5;
+}
+
+.checkbox-group input:checked + label::before {
+    border-color: var(--theme-bg-darker);
+    background: var(--theme-bg);
+    box-shadow: inset 0 0 0 2px #fff;
+}
+
+.checkbox-group input[type="radio"] + label::before {
+    border-radius: 50%;
+}
+
+button,
+.checkbox-group input:checked + label {
+    background: var(--theme-bg);
+    border: 1px solid var(--theme-bg-darker);
+    color: var(--theme-cl);
+}
+
+button:hover,
+.checkbox-group input:hover:checked + label {
+    background: var(--theme-bg-lighter);
+}
