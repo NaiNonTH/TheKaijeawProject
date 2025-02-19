@@ -161,3 +161,57 @@ def mark_order_as_done(request: HttpRequest):
         }
 
         return render(request, "restaurant/error.html", context, status=405)
+
+def update_filling_availability(request: HttpRequest):
+    if request.method == "POST":
+        req_fillings =  request.POST.getlist("filling")
+
+        Filling.objects                     \
+            .filter(name__in=req_fillings)  \
+            .update(is_available=True)
+        
+        Filling.objects                     \
+            .exclude(name__in=req_fillings) \
+            .update(is_available=False)
+        
+        return HttpResponseRedirect("/restaurant/menus")
+    else:
+        context = {
+            "is_error": False,
+            "status_code": 405,
+            "message": "ท่านไม่ได้เข้ามาหน้านี้อย่างถูกต้อง",
+        }
+        
+        return render(request, "restaurant/error.html", context, status=405)
+    
+def toggle_takeaway(request: HttpRequest):
+    if request.method == "POST":
+        req_allow_takeaway = "box" in request.POST
+
+        Restaurant.objects.update(allow_takeaway=req_allow_takeaway)
+        
+        return HttpResponseRedirect("/restaurant/menus")
+    else:
+        context = {
+            "is_error": False,
+            "status_code": 405,
+            "message": "ท่านไม่ได้เข้ามาหน้านี้อย่างถูกต้อง",
+        }
+        
+        return render(request, "restaurant/error.html", context, status=405)
+    
+def toggle_restaurant(request: HttpRequest):
+    if request.method == "POST":
+        req_is_opened = "is_opened" in request.POST
+
+        Restaurant.objects.update(is_opened=req_is_opened)
+        
+        return HttpResponseRedirect("/restaurant/menus")
+    else:
+        context = {
+            "is_error": False,
+            "status_code": 405,
+            "message": "ท่านไม่ได้เข้ามาหน้านี้อย่างถูกต้อง",
+        }
+        
+        return render(request, "restaurant/error.html", context, status=405)
