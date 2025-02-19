@@ -4,12 +4,13 @@ body {
 
 nav {
     position: fixed;
+    z-index: 99;
     bottom: 0;
     left: 0;
     right: 0;
     
-    background: #f0f0f0;
-    color: #121212;
+    background: var(--theme-bg);
+    color: var(--theme-cl);
 }
 
 nav ul {
@@ -18,14 +19,43 @@ nav ul {
 
     list-style: none;
     padding: 0;
+
+    max-width: 48rem;
+    margin: auto;
 }
 
 nav li {
     flex: 1;
 }
 
+nav svg {
+    margin: 0.25em auto;
+    width: 1.75rem;
+    height: 1.75rem;
+}
+
 nav a {
     display: block;
-    padding: 1rem;
+    padding: 0.25rem 0;
     text-align: center;
+    text-decoration: none;
+    
+    color: inherit;
+    font-size: 0.8em;
+}
+
+nav a:hover {
+    background: var(--theme-bg-lighter);
+}
+
+nav a > * {
+    display: block;
+}
+
+nav li[aria-current="true"] a {
+    border-bottom: 2px solid var(--theme-bg-lightest);
+    background: linear-gradient(
+        #0000,
+        var(--theme-bg-lighter) 90%
+    );
 }
