@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.http import HttpRequest, HttpResponseRedirect
 
-from .models import Filling, Egg, Order, Restaurant, NoQueueLeftError, NoEggAmountSpecifiedError, TooManyFillingsError
+from .models import Filling, Egg, Order, Restaurant, Validator
 
 # Create your views here.
 
@@ -20,13 +20,13 @@ def queue_page(request: HttpRequest):
     if request and request.method == "POST":
         try:
             if "egg" not in request.POST:
-                raise NoEggAmountSpecifiedError
+                raise Validator.NoEggAmountSpecifiedError
 
             fillings_list = request.POST.getlist("filling")
             is_takeaway = "is_takeaway" in request.POST
 
             if len(fillings_list) > 3:
-                raise TooManyFillingsError
+                raise Validator.TooManyFillingsError
 
             egg_amount = Egg.objects.get(pk=request.POST['egg'])
 
@@ -39,7 +39,7 @@ def queue_page(request: HttpRequest):
                 max_queue_number = 24
 
                 if len(unavailable_queues) == max_queue_number:
-                    raise NoQueueLeftError
+                    raise Validator.NoQueueLeftError
 
                 queue_number = unavailable_queues[-1] % max_queue_number + 1
 
@@ -57,7 +57,7 @@ def queue_page(request: HttpRequest):
                 filling = Filling.objects.get(pk=filling_name)
                 new_order.fillings.add(filling)
 
-        except NoQueueLeftError:
+        except Validator.NoQueueLeftError:
             context = {
                 "is_error": False,
                 "status_code": 400,
@@ -65,7 +65,7 @@ def queue_page(request: HttpRequest):
             }
 
             return render(request, "customer/error.html", context, status=400)
-        except NoEggAmountSpecifiedError:
+        except Validator.NoEggAmountSpecifiedError:
             context = {
                 "is_error": False,
                 "status_code": 400,
@@ -73,7 +73,7 @@ def queue_page(request: HttpRequest):
             }
             
             return render(request, "customer/error.html", context, status=400)
-        except TooManyFillingsError:
+        except Validator.TooManyFillingsError:
             context = {
                 "is_error": False,
                 "status_code": 400,
