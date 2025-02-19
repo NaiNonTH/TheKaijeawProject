@@ -48,7 +48,11 @@
                 <legend>ตัวเลือกอื่น ๆ</legend>
                 <div class="checkbox-group">
                     <div>
-                        <input type="checkbox" name="is_takeaway" id="is_takeaway">
+                        {% if restaurant.allow_takeaway %}
+                            <input type="checkbox" name="is_takeaway" id="is_takeaway">
+                        {% else %}
+                            <input disabled type="checkbox" name="is_takeaway" id="is_takeaway">
+                        {% endif %}
                         <label for="is_takeaway">ใส่กล่อง</label>
                     </div>
                 </div>

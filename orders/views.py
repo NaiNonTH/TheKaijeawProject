@@ -8,10 +8,12 @@ from .models import Filling, Egg, Order, Restaurant, Validator
 def menu_page(request: HttpRequest):
     fillings = Filling.objects.all()
     eggs = Egg.objects.all()
+    restaurant = Restaurant.objects.last()
 
     context = {
         "fillings": fillings,
-        "eggs": eggs
+        "eggs": eggs,
+        "restaurant": restaurant
     }
 
     return render(request, "customer/menupage.html", context)
