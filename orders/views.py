@@ -6,9 +6,13 @@ from .models import Filling, Egg, Order, Restaurant, Validator
 # Create your views here.
 
 def menu_page(request: HttpRequest):
+    restaurant = Restaurant.objects.last()
+
+    if not restaurant.is_opened:
+        return render(request, "customer/closed.html")
+
     fillings = Filling.objects.all()
     eggs = Egg.objects.all()
-    restaurant = Restaurant.objects.last()
 
     context = {
         "fillings": fillings,

@@ -1,0 +1,11 @@
+main > * {
+    margin: 1.5rem 0;
+}
+
+h2 {
+    font-size: 3em;
+}
+
+h2, p {
+    text-align: center;
+}
