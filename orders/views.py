@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.http import HttpRequest, HttpResponseRedirect
 
 from .models import Filling, Egg, Order, Restaurant, Validator
+from .utils import OrderBuilder
 
 # Create your views here.
 
@@ -28,40 +29,14 @@ def queue_page(request: HttpRequest):
             if "egg" not in request.POST:
                 raise Validator.NoEggAmountSpecifiedError
 
+            egg_amount = request.POST["egg"]
             fillings_list = request.POST.getlist("filling")
             is_takeaway = "is_takeaway" in request.POST
 
-            if len(fillings_list) > 3:
-                raise Validator.TooManyFillingsError
-
-            egg_amount = Egg.objects.get(pk=request.POST['egg'])
-
-            if len(Order.objects.filter(is_completed=False).all()) == 0:
-                queue_number = 1
-            else:
-                incompleted_orders = Order.objects.filter(is_completed=False)
-                unavailable_queues = [order.queue_number for order in list(incompleted_orders.all())]
-
-                max_queue_number = 24
-
-                if len(unavailable_queues) == max_queue_number:
-                    raise Validator.NoQueueLeftError
-
-                queue_number = unavailable_queues[-1] % max_queue_number + 1
-
-                while queue_number in unavailable_queues:
-                    queue_number = (queue_number + 1) % max_queue_number
-
-            new_order = Order.objects.create(
-                queue_number=queue_number,
-                egg_amount=egg_amount,
-                is_takeaway=is_takeaway
-            )
-            new_order.save()
-
-            for filling_name in fillings_list:
-                filling = Filling.objects.get(pk=filling_name)
-                new_order.fillings.add(filling)
+            new_order = OrderBuilder(egg_amount)        \
+                        .add_fillings(fillings_list)    \
+                        .takeaway(is_takeaway)          \
+                        .build()                        \
 
         except Validator.NoQueueLeftError:
             context = {
@@ -97,8 +72,8 @@ def queue_page(request: HttpRequest):
             return render(request, "customer/error.html", context, status=500)
         
         context = {
-            "queue_number": queue_number,
-            "price": egg_amount.price
+            "queue_number": new_order.queue_number,
+            "price": new_order.egg_amount.price
         }
 
         return render(request, "customer/queuepage.html", context)
