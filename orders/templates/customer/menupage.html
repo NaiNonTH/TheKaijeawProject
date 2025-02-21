@@ -12,13 +12,16 @@
     {% include '../header-big.html' %}
     <main>
         {% if errors|length > 0 %}
-            <div>
-                <p>ข้อมูลที่กรอกไม่สมบูรณ์เนื่องจาก...</p>
-                <ul>
-                    {% for error in errors %}
-                        <li>{{ error }}</li>
-                    {% endfor %}
-                </ul>
+            <div class="error-box">
+                <div>
+                    <p>ข้อมูลที่กรอกไม่สมบูรณ์เนื่องจาก...</p>
+                    <ul>
+                        {% for error in errors %}
+                            <li>{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                    <p>กรุณากรอกข้อมูลให้ครบถ้วนแล้วลองใหม่อีกครั้ง</p>
+                </div>
             </div>
         {% endif %}
         <form action="{% url 'save_order' %}" method="post">
