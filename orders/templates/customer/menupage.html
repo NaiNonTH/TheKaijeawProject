@@ -11,7 +11,17 @@
 <body class="customer">
     {% include '../header-big.html' %}
     <main>
-        <form action="{% url 'queue_page' %}" method="post">
+        {% if errors|length > 0 %}
+            <div>
+                <p>ข้อมูลที่กรอกไม่สมบูรณ์เนื่องจาก...</p>
+                <ul>
+                    {% for error in errors %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        {% endif %}
+        <form action="{% url 'save_order' %}" method="post">
             <fieldset>
                 <legend>เลือกไส้ (สามารถเลือกได้มากที่สุด 3 ไส้)</legend>
                 <div class="checkbox-group">
