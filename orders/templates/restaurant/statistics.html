@@ -5,10 +5,27 @@
 <head>
     {% include '../metadata.html' %}
     <link rel="stylesheet" href="{% static 'restaurant/main.css' %}">
+    <link rel="stylesheet" href="{% static 'restaurant/statistics.css' %}">
     <title>Statistics Page</title>
 </head>
 <body class="restaurant">
     {% include '../header.html' %}
+    <main>
+        <div class="stats-box">
+            <div class="order-count">
+                <span>จำนวนคำสั่งซื้อทั้งหมด</span><span class="invisible">:</span>
+                <span class="value">{{ order_counts }}</span>
+            </div>
+            <div>
+                <span>จำนวนไข่</span><span class="invisible">:</span>
+                <span class="value">{{ egg_counts }}</span>
+            </div>
+            <div>
+                <span>ยอดขาย</span><span class="invisible">:</span>
+                <span class="value">{{ grossing }}฿</span>
+            </div>
+        </div>
+    </main>
     {% include '../restaurant-nav.html' %}
 </body>
 </html>

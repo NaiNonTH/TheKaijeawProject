@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.http import HttpRequest, HttpResponseRedirect
 
 from django.views.decorators.http import require_GET, require_POST
+from django.db.models.aggregates import Sum
 
 from .models import Filling, Egg, Order, Restaurant, Validator
 from .utils import OrderBuilder
@@ -164,4 +165,16 @@ def toggle_restaurant(request: HttpRequest):
 
 @require_GET
 def statistics_page(request: HttpRequest):
-    return render(request, "restaurant/statistics.html")
+    selected_orders = Order.objects.all()
+
+    order_counts = selected_orders.count()
+    egg_counts = selected_orders.aggregate(Sum("egg_amount__amount"))["egg_amount__amount__sum"]
+    grossing = selected_orders.aggregate(Sum("egg_amount__price"))["egg_amount__price__sum"]
+
+    context = {
+        "order_counts": order_counts,
+        "egg_counts": egg_counts,
+        "grossing": grossing
+    }
+
+    return render(request, "restaurant/statistics.html", context)
