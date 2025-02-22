@@ -10,5 +10,6 @@ urlpatterns = [
     path('restaurant/menus', views.restaurant_menu_page, name="restaurant_menu_page"),
     path('restaurant/menus/update-filling-availability', views.update_filling_availability, name="update_filling_availability"),
     path('restaurant/menus/toggle-takeaway', views.toggle_takeaway, name="toggle_takeaway"),
-    path('restaurant/menus/toggle-restaurant', views.toggle_restaurant, name="toggle_restaurant")
+    path('restaurant/menus/toggle-restaurant', views.toggle_restaurant, name="toggle_restaurant"),
+    path('restaurant/statistics', views.statistics_page, name="statistics_page")
 ]

@@ -161,3 +161,7 @@ def toggle_restaurant(request: HttpRequest):
     Restaurant.objects.update(is_opened=req_is_opened)
     
     return HttpResponseRedirect("/restaurant/menus")
+
+@require_GET
+def statistics_page(request: HttpRequest):
+    return render(request, "restaurant/statistics.html")
