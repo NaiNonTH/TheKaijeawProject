@@ -81,8 +81,6 @@ def queue_page(request: HttpRequest):
             "price": request.session['price']
         }
 
-        request.session.flush()
-
         return render(request, "customer/queuepage.html", context)
     else:
         context = {
