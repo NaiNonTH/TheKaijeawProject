@@ -6,6 +6,7 @@
     {% include '../metadata.html' %}
     <link rel="stylesheet" href="{% static 'restaurant/main.css' %}">
     <link rel="stylesheet" href="{% static 'restaurant/statistics.css' %}">
+    <script src="https://cdn.plot.ly/plotly-3.0.1.min.js" charset="utf-8"></script>
     <title>Statistics Page</title>
 </head>
 <body class="restaurant">
@@ -31,14 +32,45 @@
             </div>
             <div class="span">
                 <span>จำนวนไส้ที่สั่ง</span>
-                {{ fillings_graph|safe }}
+                <div id="fillings"></div>
             </div>
             <div class="span">
                 <span>เวลาที่สั่ง</span>
-                {{ order_time_graph|safe }}
+                <div id="order-time"></div>
             </div>
         </div>
     </main>
     {% include '../restaurant-nav.html' %}
+    <script>
+        var fillingsData = [{
+            x: {{ fillings_graph.x|safe }},
+            y: {{ fillings_graph.y|safe }},
+            type: "bar"
+        }];
+
+        var orderTimeData = [{
+            x: {{ order_time_graph.x|safe }},
+            y: {{ order_time_graph.y|safe }},
+            type: "line"
+        }];
+        
+        function makeLabel(x) {
+            return {
+                xaxis: {
+                    title: {
+                        text: x
+                    }
+                },
+                yaxis: {
+                    title: {
+                        text: "จำนวนคำสั่งซื้อ"
+                    }
+                }
+            }
+        }
+
+        Plotly.newPlot("fillings", fillingsData, makeLabel("ชื่อไส้"));
+        Plotly.newPlot("order-time", orderTimeData, makeLabel("ชั่วโมงที่"));
+    </script>
 </body>
 </html>
