@@ -124,7 +124,7 @@ def queue_page(request: HttpRequest):
 
         return render(request, "customer/error.html", context)
     
-@user_passes_test(user_check, login_url='/login')
+@user_passes_test(user_check, login_url='/restaurant/login/')
 def restaurant_menu_page(request: HttpRequest):
     fillings = list(Filling.objects.all())
     restaurant = Restaurant.objects.last()
@@ -136,7 +136,7 @@ def restaurant_menu_page(request: HttpRequest):
 
     return render(request, "restaurant/menupage.html", context)
 
-@user_passes_test(user_check, login_url='/login')
+@user_passes_test(user_check, login_url='/restaurant/login/')
 def orders_page(request: HttpRequest):
     orders = list(Order.objects.filter(is_completed=False).all())
 
@@ -146,7 +146,7 @@ def orders_page(request: HttpRequest):
 
     return render(request, "restaurant/orderspage.html", context)
 
-@user_passes_test(user_check, login_url='/login')
+@user_passes_test(user_check, login_url='/restaurant/login/')
 @require_POST
 def mark_order_as_done(request: HttpRequest):
     try:
@@ -166,7 +166,7 @@ def mark_order_as_done(request: HttpRequest):
 
         return render(request, "restaurant/error.html", context, status=400)
 
-@user_passes_test(user_check, login_url='/login')
+@user_passes_test(user_check, login_url='/restaurant/login/')
 @require_POST
 def update_filling_availability(request: HttpRequest):
     req_fillings =  request.POST.getlist("filling")
@@ -181,7 +181,7 @@ def update_filling_availability(request: HttpRequest):
     
     return HttpResponseRedirect("/restaurant/menus")
 
-@user_passes_test(user_check, login_url='/login')    
+@user_passes_test(user_check, login_url='/restaurant/login/') 
 @require_POST
 def toggle_takeaway(request: HttpRequest):
     req_allow_takeaway = "box" in request.POST
@@ -190,7 +190,7 @@ def toggle_takeaway(request: HttpRequest):
     
     return HttpResponseRedirect("/restaurant/menus")
 
-@user_passes_test(user_check, login_url='/login')
+@user_passes_test(user_check, login_url='/restaurant/login/')
 @require_POST
 def toggle_restaurant(request: HttpRequest):
     req_is_opened = "is_opened" in request.POST
@@ -199,7 +199,7 @@ def toggle_restaurant(request: HttpRequest):
     
     return HttpResponseRedirect("/restaurant/menus")
 
-@user_passes_test(user_check, login_url='/login')
+@user_passes_test(user_check, login_url='/restaurant/login/')
 @require_GET
 def statistics_page(request: HttpRequest):
     filtered = request.method == "GET" and "date" in request.GET
