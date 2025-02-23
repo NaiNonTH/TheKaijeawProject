@@ -1,9 +1,11 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.http import HttpRequest, HttpResponseRedirect
 
 from django.views.decorators.http import require_GET, require_POST
 from django.db.models import Q
 from django.db.models.aggregates import Sum, Count
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import user_passes_test
 
 from .models import Filling, Egg, Order, Restaurant, Validator
 from .utils import OrderBuilder
@@ -14,6 +16,33 @@ import plotly.express as px
 import pandas as pd
 
 # Create your views here.
+
+def user_check(user):
+    if not user.is_authenticated:
+        return False
+    if user.is_superuser or user.is_staff:
+        return True
+    return user.groups.filter(name='Staff').exists()
+
+def login_view(request):
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            login(request, user)
+            return redirect('/restaurant/orders')
+        else:
+            return render(request, 'login.html', {
+                'error': 'Invalid username or password.'
+            })
+    else:
+        return render(request, 'login.html')
+
+def logout_view(request):
+    logout(request)
+    return redirect('login')
 
 @require_GET
 def menu_page(request: HttpRequest):
@@ -98,6 +127,7 @@ def queue_page(request: HttpRequest):
 
         return render(request, "customer/error.html", context)
     
+@user_passes_test(user_check, login_url='/login')
 def restaurant_menu_page(request: HttpRequest):
     fillings = list(Filling.objects.all())
     restaurant = Restaurant.objects.last()
@@ -111,6 +141,7 @@ def restaurant_menu_page(request: HttpRequest):
 
     return render(request, "restaurant/menupage.html", context)
 
+@user_passes_test(user_check, login_url='/login')
 def orders_page(request: HttpRequest):
     orders = list(Order.objects.filter(is_completed=False).all())
 
@@ -120,6 +151,7 @@ def orders_page(request: HttpRequest):
 
     return render(request, "restaurant/orderspage.html", context)
 
+@user_passes_test(user_check, login_url='/login')
 @require_POST
 def mark_order_as_done(request: HttpRequest):
     try:
@@ -139,6 +171,7 @@ def mark_order_as_done(request: HttpRequest):
 
         return render(request, "restaurant/error.html", context, status=400)
 
+@user_passes_test(user_check, login_url='/login')
 @require_POST
 def update_filling_availability(request: HttpRequest):
     req_fillings =  request.POST.getlist("filling")
@@ -152,7 +185,8 @@ def update_filling_availability(request: HttpRequest):
         .update(is_available=False)
     
     return HttpResponseRedirect("/restaurant/menus")
-    
+
+@user_passes_test(user_check, login_url='/login')    
 @require_POST
 def toggle_takeaway(request: HttpRequest):
     req_allow_takeaway = "box" in request.POST
@@ -161,6 +195,7 @@ def toggle_takeaway(request: HttpRequest):
     
     return HttpResponseRedirect("/restaurant/menus")
 
+@user_passes_test(user_check, login_url='/login')
 @require_POST
 def toggle_restaurant(request: HttpRequest):
     req_is_opened = "is_opened" in request.POST
@@ -169,6 +204,7 @@ def toggle_restaurant(request: HttpRequest):
     
     return HttpResponseRedirect("/restaurant/menus")
 
+@user_passes_test(user_check, login_url='/login')
 @require_GET
 def statistics_page(request: HttpRequest):
     filtered = request.method == "GET" and "date" in request.GET

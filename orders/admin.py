@@ -14,12 +14,6 @@ class RestaurantAdminForm(forms.ModelForm):
         model = Restaurant
         fields = '__all__'
 
-    def clean_passcode(self):
-        raw_passcode = self.cleaned_data.get('passcode')
-        if raw_passcode:
-            return make_password(raw_passcode)
-        return raw_passcode
-
 class RestaurantAdmin(admin.ModelAdmin):
     form = RestaurantAdminForm
     list_display = ('queue_capacity', 'is_opened', 'allow_takeaway')
