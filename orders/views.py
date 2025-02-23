@@ -7,6 +7,8 @@ from django.db.models.aggregates import Sum
 from .models import Filling, Egg, Order, Restaurant, Validator
 from .utils import OrderBuilder
 
+from datetime import date
+
 # Create your views here.
 
 @require_GET
@@ -165,16 +167,29 @@ def toggle_restaurant(request: HttpRequest):
 
 @require_GET
 def statistics_page(request: HttpRequest):
-    selected_orders = Order.objects.all()
+    filtered = request.method == "GET" and "date" in request.GET
+
+    if filtered:
+        year, month, day = request.GET["date"].split("-")
+        filter_date = date(int(year), int(month), int(day))
+    else:
+        filter_date = date.today()
+
+    selected_orders = Order.objects.filter(date__date=filter_date)
 
     order_counts = selected_orders.count()
-    egg_counts = selected_orders.aggregate(Sum("egg_amount__amount"))["egg_amount__amount__sum"]
-    grossing = selected_orders.aggregate(Sum("egg_amount__price"))["egg_amount__price__sum"]
+    egg_counts = \
+        0 if not selected_orders.exists() \
+            else selected_orders.aggregate(Sum("egg_amount__amount"))["egg_amount__amount__sum"]
+    grossing = \
+        0 if not selected_orders.exists() \
+            else selected_orders.aggregate(Sum("egg_amount__price"))["egg_amount__price__sum"]
 
     context = {
         "order_counts": order_counts,
         "egg_counts": egg_counts,
-        "grossing": grossing
+        "grossing": grossing,
+        "filter_date": str(filter_date)
     }
 
     return render(request, "restaurant/statistics.html", context)

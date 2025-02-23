@@ -11,6 +11,11 @@
 <body class="restaurant">
     {% include '../header.html' %}
     <main>
+        <form action="" method="get">
+            <label for="date">ดูสถิติของวันที่</label>
+            <input type="date" name="date" id="date" value="{{ filter_date }}">
+            <button type="submit">เรียกดู</button>
+        </form>
         <div class="stats-box">
             <div class="order-count">
                 <span>จำนวนคำสั่งซื้อทั้งหมด</span><span class="invisible">:</span>

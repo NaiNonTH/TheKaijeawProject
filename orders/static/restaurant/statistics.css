@@ -9,6 +9,7 @@
     padding: 1rem;
     text-align: center;
 }
+
 .stats-box > :not(.order-count) {
     border-color: #0000 var(--body-bg-lighter) var(--body-bg-lighter);
 }
@@ -16,9 +17,7 @@
 .order-count {
     background: var(--theme-bg);
     color: var(--theme-cl);
-    border-color: var(--theme-bg-darker);
-
-    border-radius: 1px solid;
+    border: 1px solid var(--theme-bg-darker);
 
     font-family: "Mitr", sans-serif;
     font-size: 1.25em;
@@ -37,6 +36,26 @@
 
 .invisible::selection {
     background: #0000;
+}
+
+button {
+    padding: 0.25em 1em;
+}
+
+button:hover {
+    background: var(--theme-bg-lighter);
+}
+
+button,
+input[type="date"] {
+    border-radius: 0.25rem;
+    font-size: inherit;
+}
+
+input[type="date"] {
+    border: 1px solid var(--body-bg-lighter);
+    padding: 0.25em 0.5em;
+    font-family: "Mitr", sans-serif;
 }
 
 @media (min-width: 32rem) {

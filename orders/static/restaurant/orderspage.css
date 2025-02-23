@@ -10,8 +10,7 @@
     grid-template-rows: 1fr auto;
 }
 
-.order > *,
-form button {
+.order > * {
     border: 1px solid
 }
 
@@ -49,13 +48,6 @@ form button {
 .order form button {
     display: block;
     margin-left: auto;
-
-    background: var(--theme-bg);
-    border-color: var(--theme-bg-darker);
-    color: var(--theme-cl);
-    
-    border-radius: 0.25rem;
-
     padding: 0.5em 1.5em;
 }
 
