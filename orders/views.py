@@ -12,9 +12,6 @@ from .utils import OrderBuilder
 
 from datetime import date
 
-import plotly.express as px
-import pandas as pd
-
 # Create your views here.
 
 def user_check(user):
@@ -132,8 +129,6 @@ def restaurant_menu_page(request: HttpRequest):
     fillings = list(Filling.objects.all())
     restaurant = Restaurant.objects.last()
 
-    print(restaurant)
-
     context = {
         "fillings": fillings,
         "restaurant": restaurant
@@ -231,13 +226,6 @@ def statistics_page(request: HttpRequest):
         fillings_count.append(
             selected_orders.aggregate(title=Count("fillings__name", filter=Q(fillings__title=title)))["title"]
         )
-    
-    fillings_counts_df = pd.DataFrame({
-        "ชื่อไส้": fillings_title,
-        "จำนวนคำสั่งซื้อ": fillings_count
-    })
-
-    fillings_graph = px.bar(fillings_counts_df, x="ชื่อไส้", y="จำนวนคำสั่งซื้อ", height=480).to_html()
 
     order_times = list(range(0, 24))
     order_count_at_time = []
@@ -247,20 +235,19 @@ def statistics_page(request: HttpRequest):
             selected_orders.filter(date__hour=hour).count()
         )
 
-    order_count_df = pd.DataFrame({
-        "ชั่วโมงที่": order_times,
-        "จำนวนคำสั่งซื้อ": order_count_at_time
-    })
-
-    order_time_graph = px.line(order_count_df, x="ชั่วโมงที่", y="จำนวนคำสั่งซื้อ", height=480).to_html()
-
     context = {
         "order_count": order_count,
         "egg_count": counts["egg_count"],
         "grossing": counts["grossing"],
         "filter_date": str(filter_date),
-        "fillings_graph": fillings_graph,
-        "order_time_graph": order_time_graph
+        "fillings_graph": {
+            "x": fillings_title,
+            "y": fillings_count
+        },
+        "order_time_graph": {
+            "x": order_times,
+            "y": order_count_at_time
+        }
     }
 
     return render(request, "restaurant/statistics.html", context)
