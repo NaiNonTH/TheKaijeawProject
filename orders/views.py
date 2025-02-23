@@ -2,12 +2,16 @@ from django.shortcuts import render
 from django.http import HttpRequest, HttpResponseRedirect
 
 from django.views.decorators.http import require_GET, require_POST
-from django.db.models.aggregates import Sum
+from django.db.models import Q
+from django.db.models.aggregates import Sum, Count
 
 from .models import Filling, Egg, Order, Restaurant, Validator
 from .utils import OrderBuilder
 
 from datetime import date
+
+import plotly.express as px
+import pandas as pd
 
 # Create your views here.
 
@@ -177,19 +181,50 @@ def statistics_page(request: HttpRequest):
 
     selected_orders = Order.objects.filter(date__date=filter_date)
 
-    order_counts = selected_orders.count()
-    egg_counts = \
-        0 if not selected_orders.exists() \
-            else selected_orders.aggregate(Sum("egg_amount__amount"))["egg_amount__amount__sum"]
-    grossing = \
-        0 if not selected_orders.exists() \
-            else selected_orders.aggregate(Sum("egg_amount__price"))["egg_amount__price__sum"]
+    order_count = selected_orders.count()
+    
+    counts = selected_orders.aggregate(
+        egg_count=Sum("egg_amount__amount", default=0),
+        grossing=Sum("egg_amount__price", default=0)
+    )
+    
+    fillings_title = [filling.title for filling in Filling.objects.all()]
+    fillings_count = []
+    
+    for title in fillings_title:
+        fillings_count.append(
+            selected_orders.aggregate(title=Count("fillings__name", filter=Q(fillings__title=title)))["title"]
+        )
+    
+    fillings_counts_df = pd.DataFrame({
+        "ชื่อไส้": fillings_title,
+        "จำนวนคำสั่งซื้อ": fillings_count
+    })
+
+    fillings_graph = px.bar(fillings_counts_df, x="ชื่อไส้", y="จำนวนคำสั่งซื้อ", height=480).to_html()
+
+    order_times = list(range(0, 24))
+    order_count_at_time = []
+
+    for hour in order_times:
+        order_count_at_time.append(
+            selected_orders.filter(date__hour=hour).count()
+        )
+
+    order_count_df = pd.DataFrame({
+        "ชั่วโมงที่": order_times,
+        "จำนวนคำสั่งซื้อ": order_count_at_time
+    })
+
+    order_time_graph = px.line(order_count_df, x="ชั่วโมงที่", y="จำนวนคำสั่งซื้อ", height=480).to_html()
 
     context = {
-        "order_counts": order_counts,
-        "egg_counts": egg_counts,
-        "grossing": grossing,
-        "filter_date": str(filter_date)
+        "order_count": order_count,
+        "egg_count": counts["egg_count"],
+        "grossing": counts["grossing"],
+        "filter_date": str(filter_date),
+        "fillings_graph": fillings_graph,
+        "order_time_graph": order_time_graph
     }
 
     return render(request, "restaurant/statistics.html", context)

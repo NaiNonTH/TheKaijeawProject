@@ -63,11 +63,11 @@ input[type="date"] {
         grid-template-columns: repeat(2, 1fr);
     }
 
-    .stats-box > *:nth-child(2n) {
+    .stats-box > *:not(.span):nth-child(2n) {
         border-right: none;
     }
 
-    .order-count {
+    .span {
         grid-column: span 2;
     }
 }

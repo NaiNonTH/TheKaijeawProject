@@ -16,18 +16,26 @@
             <input type="date" name="date" id="date" value="{{ filter_date }}">
             <button type="submit">เรียกดู</button>
         </form>
-        <div class="stats-box">
-            <div class="order-count">
+        <div class="stats-box span">
+            <div class="order-count span">
                 <span>จำนวนคำสั่งซื้อทั้งหมด</span><span class="invisible">:</span>
-                <span class="value">{{ order_counts }}</span>
+                <span class="value">{{ order_count }}</span>
             </div>
             <div>
                 <span>จำนวนไข่</span><span class="invisible">:</span>
-                <span class="value">{{ egg_counts }}</span>
+                <span class="value">{{ egg_count }}</span>
             </div>
             <div>
                 <span>ยอดขาย</span><span class="invisible">:</span>
                 <span class="value">{{ grossing }}฿</span>
+            </div>
+            <div class="span">
+                <span>จำนวนไส้ที่สั่ง</span>
+                {{ fillings_graph|safe }}
+            </div>
+            <div class="span">
+                <span>เวลาที่สั่ง</span>
+                {{ order_time_graph|safe }}
             </div>
         </div>
     </main>
