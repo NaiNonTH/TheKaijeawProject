@@ -1,0 +1,61 @@
+.login {
+    max-width: 20rem;
+    margin: auto;
+
+    padding: 1.5rem;
+    border: 1px dashed var(--body-bg-lighter);
+}
+
+hgroup > * {
+    margin: 0.25rem 0;
+}
+
+.sidenote {
+    font-size: 0.8em;
+    opacity: 0.5;
+}
+
+.sidenote.error {
+    opacity: 1;
+    color: #a00;
+    
+    display: flex;
+    gap: 0.5ch;
+    align-items: center;
+}
+
+.sidenote.error::before {
+    content: "";
+    background: no-repeat url("../not-allowed.svg") center / contain;
+    width: 2em;
+    height: 2em;
+}
+
+.error-icon {
+    display: inline-block;
+    vertical-align: middle;
+    margin-right: 0.5ch;
+}
+
+.login > *,
+form > * {
+    display: block;
+    margin: 1.5rem 0;
+}
+
+form input {
+    font-family: inherit;
+    width: 100%;
+    padding: 0.5em 0.75em;
+}
+
+form button {
+    margin-left: auto;
+    padding: 0.5em 1.5em;
+}
+
+.login-btn {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 1rem;
+}
