@@ -84,6 +84,20 @@ def save_order(request: HttpRequest):
 
     egg_amount = request.POST["egg"]
     is_takeaway = "is_takeaway" in request.POST
+    
+    unavailable = Filling.objects.filter(name__in=fillings_list, is_available=False)
+    if unavailable.exists():
+        unavailable_titles = [f.title for f in unavailable]
+        error_message = [
+            "ขออภัย รายละเอียดเมนูมีการเปลี่ยนแปลง: " + ", ".join(unavailable_titles),
+            "กรุณาเลือกใหม่อีกครั้ง"
+        ]
+        request.session['success'] = False
+        request.session['error_message'] = error_message
+        return HttpResponseRedirect("/")
+    
+    egg_amount = request.POST["egg"]
+    is_takeaway = "is_takeaway" in request.POST
 
     try:
         new_order = OrderBuilder(egg_amount)        \
