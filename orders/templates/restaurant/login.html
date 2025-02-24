@@ -1,0 +1,36 @@
+{% load static %}
+
+<html lang="th">
+<head>
+    {% include '../metadata.html' %}
+    <link rel="stylesheet" href="{% static 'restaurant/main.css' %}">
+    <link rel="stylesheet" href="{% static 'restaurant/login.css' %}">
+    <title>Login</title>
+</head>
+<body class="restaurant">
+    {% include '../header-big.html' %}
+    <main>
+        <div class="login">
+            <hgroup>
+                <h2>ระบบร้านค้า</h2>
+                {% if error %}
+                    <p class="sidenote error">
+                        ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง
+                    </p>
+                {% else %}
+                    <p class="sidenote">กรุณาล็อกอินด้วยบัญชีร้านค้าหรือ Admin</p>
+                {% endif %}
+            </hgroup>
+            <form method="POST" action="{% url 'authenticate' %}">
+                <input type="text" name="username" placeholder="ชื่อผู้ใช้" required>
+                <input type="password" name="password" placeholder="รหัสผ่าน" required>
+                {% csrf_token %}
+                <div class="login-btn">
+                    <p class="sidenote">หากลืมรหัสผ่าน กรุณาติดต่อ Admin</p>
+                    <button type="submit">ล็อกอิน</button>
+                </div>
+            </form>
+        </div>
+    </main> 
+</body>
+</html>

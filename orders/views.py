@@ -14,33 +14,6 @@ from datetime import date
 
 # Create your views here.
 
-def user_check(user):
-    if not user.is_authenticated:
-        return False
-    if user.is_superuser or user.is_staff:
-        return True
-    return user.groups.filter(name='Staff').exists()
-
-def login_view(request):
-    if request.method == 'POST':
-        username = request.POST.get('username')
-        password = request.POST.get('password')
-
-        user = authenticate(request, username=username, password=password)
-        if user is not None:
-            login(request, user)
-            return redirect('/restaurant/orders')
-        else:
-            return render(request, 'login.html', {
-                'error': 'Invalid username or password.'
-            })
-    else:
-        return render(request, 'login.html')
-
-def logout_view(request):
-    logout(request)
-    return redirect('login')
-
 @require_GET
 def menu_page(request: HttpRequest):
     restaurant = Restaurant.objects.last()
@@ -137,6 +110,50 @@ def queue_page(request: HttpRequest):
         request.session.flush()
 
         return render(request, "customer/error.html", context)
+
+def restaurant_section(request):
+    return HttpResponseRedirect("/restaurant/orders")
+
+def user_check(user):
+    if not user.is_authenticated:
+        return False
+    if user.is_superuser or user.is_staff:
+        return True
+    return user.groups.filter(name='Staff').exists()
+
+def login_view(request: HttpRequest):
+    if request.user.is_authenticated:
+        return HttpResponseRedirect("/restaurant/orders")
+    else:
+        context = {}
+
+        if "next" in request.GET:
+            context["next"] = request.GET["next"]
+
+        if "login_error" in request.session:
+            context["error"] = request.session["login_error"]
+            request.session.flush()
+
+        return render(request, 'restaurant/login.html', context)
+    
+def restaurant_authentication(request: HttpRequest):
+    username = request.POST.get('username')
+    password = request.POST.get('password')
+
+    user = authenticate(request, username=username, password=password)
+
+    if user is not None:
+        login(request, user)
+        
+        return redirect('/restaurant/orders')
+    else:
+        request.session["login_error"] = True
+
+        return HttpResponseRedirect("/restaurant/login")
+
+def logout_view(request):
+    logout(request)
+    return redirect('login')
     
 @user_passes_test(user_check, login_url='/restaurant/login/')
 def restaurant_menu_page(request: HttpRequest):
