@@ -31,11 +31,11 @@ def login_view(request):
             login(request, user)
             return redirect('/restaurant/orders')
         else:
-            return render(request, 'login.html', {
+            return render(request, 'restaurant/login.html', {
                 'error': 'Invalid username or password.'
             })
     else:
-        return render(request, 'login.html')
+        return render(request, 'restaurant/login.html')
 
 def logout_view(request):
     logout(request)
@@ -123,6 +123,9 @@ def queue_page(request: HttpRequest):
         request.session.flush()
 
         return render(request, "customer/error.html", context)
+    
+def restaurant_section(request):
+    return HttpResponseRedirect("/restaurant/orders")
     
 @user_passes_test(user_check, login_url='/restaurant/login/')
 def restaurant_menu_page(request: HttpRequest):
