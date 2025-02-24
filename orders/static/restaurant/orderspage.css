@@ -50,7 +50,3 @@
     margin-left: auto;
     padding: 0.5em 1.5em;
 }
-
-form button:hover {
-    background: var(--theme-bg-lighter);
-}
