@@ -41,53 +41,22 @@ def menu_page(request: HttpRequest):
 def save_order(request: HttpRequest):
     if not Restaurant.objects.last().is_opened:
         return HttpResponseRedirect("/")
-
-    user_errors = []
-
-    if "egg" not in request.POST:
-        user_errors.append("ท่านไม่ได้ระบุจำนวนไข่")
-
+    
     fillings_list = request.POST.getlist("filling")
+    is_takeaway = "is_takeaway" in request.POST
 
-    if len(fillings_list) > 3:
-        user_errors.append("ท่านเลือกไส้เกิน 3 ตัวเลือก")
+                                 # ตรวจสอบข้อมูลแล้วสร้าง builder class
+                                 # พร้อมกำหนดจำนวนไข่ให้ object
+    order_builder, error_message = OrderBuilder.validate_and_create(request.POST)
 
-    if len(user_errors) > 0:
+    if order_builder is None:
         request.session['success'] = False
-        request.session['error_message'] = {
-            "intro_text": "ข้อมูลที่กรอกไม่สมบูรณ์เนื่องจาก...",
-            "middle_list": user_errors,
-            "outro_text": "กรุณากรอกข้อมูลให้ครบถ้วนแล้วลองใหม่อีกครั้ง"
-        }
+        request.session['error_message'] = error_message
 
         return HttpResponseRedirect("/")
-
-    egg_amount = request.POST["egg"]
-    is_takeaway = "is_takeaway" in request.POST
-    
-    unavailable_fillings = Filling.objects.filter(name__in=fillings_list, is_available=False)
-    cannot_takeaway = is_takeaway and not Restaurant.objects.last().allow_takeaway
-
-    if unavailable_fillings.exists() or cannot_takeaway:
-        unavailable_titles = [f.title for f in unavailable_fillings]
-
-        if cannot_takeaway:
-            unavailable_titles.append("กล่อง")
-        
-        request.session['success'] = False
-        request.session['error_message'] = {
-            "intro_text": "รายละเอียดเมนูที่ท่านเลือกเหล่านี้มีการเปลี่ยนแปลง",
-            "middle_list": unavailable_titles,
-            "outro_text": "กรุณาเลือกใหม่อีกครั้ง และขออภัยในความไม่สะดวก"
-        }
-
-        return HttpResponseRedirect("/")
-    
-    egg_amount = request.POST["egg"]
-    is_takeaway = "is_takeaway" in request.POST
 
     try:
-        new_order = OrderBuilder(egg_amount)        \
+        new_order = order_builder                   \
                     .add_fillings(fillings_list)    \
                     .takeaway(is_takeaway)          \
                     .build()
