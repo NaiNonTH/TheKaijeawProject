@@ -1,5 +1,5 @@
 from django.urls import path
-from orders import views
+from app import views
 
 urlpatterns = [
     path('', views.menu_page, name="menu_page"),
