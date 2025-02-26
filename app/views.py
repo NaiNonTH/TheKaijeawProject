@@ -18,7 +18,7 @@ from datetime import date
 def menu_page(request: HttpRequest):
     restaurant = Restaurant.objects.last()
 
-    if not restaurant.is_opened:
+    if restaurant is None or not restaurant.is_opened:
         return render(request, "customer/closed.html")
 
     fillings = Filling.objects.all()
