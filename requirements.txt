@@ -1,10 +1,6 @@
 asgiref==3.8.1
+channels==4.2.0
 Django==5.1.6
-narwhals==1.27.1
-numpy==2.2.3
-packaging==24.2
-pandas==2.2.3
-plotly==6.0.0
 python-dateutil==2.9.0.post0
 pytz==2025.1
 six==1.17.0

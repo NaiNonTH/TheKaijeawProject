@@ -1,6 +1,5 @@
 from django.contrib import admin
 from .models import Filling, Order, Egg, Restaurant
-from django.contrib.auth.hashers import make_password
 from django import forms
 
 # Register your models here.

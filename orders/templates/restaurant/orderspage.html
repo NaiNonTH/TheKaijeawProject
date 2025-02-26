@@ -45,5 +45,17 @@
         </div>
     </main>
     {% include '../restaurant-nav.html' %}
+    <script>
+        const socket = new WebSocket(`ws://${location.host}/ws/order-watcher`)
+
+        socket.addEventListener("message", function(event) {
+            const data = JSON.parse(event.data)
+            console.log(data.test);
+        });
+
+        window.addEventListener("close", function() {
+            socket.close();
+        });
+    </script>
 </body>
 </html>
