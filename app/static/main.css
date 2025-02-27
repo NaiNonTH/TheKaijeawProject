@@ -4,6 +4,10 @@
     --body-cl: #111;
 }
 
+* {
+    box-sizing: border-box;
+}
+
 html {
     font-family: "Noto Sans Thai Looped", sans-serif;
 }
