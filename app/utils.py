@@ -18,9 +18,11 @@ class OrderBuilder: # builder class (Builder Design Pattern)
         if "egg" not in post_data:
             user_errors.append("ท่านไม่ได้ระบุจำนวนไข่")
 
+        restaurant = Restaurant.objects.last()
+
         fillings_list = post_data.getlist("filling")
-        if len(fillings_list) > 3:
-            user_errors.append("ท่านเลือกไส้เกิน 3 ตัวเลือก")
+        if len(fillings_list) > restaurant.max_fillings:
+            user_errors.append(f"ท่านเลือกไส้เกิน {restaurant.max_fillings} ตัวเลือก")
 
         if len(user_errors) > 0:
             return None, {
@@ -47,7 +49,7 @@ class OrderBuilder: # builder class (Builder Design Pattern)
         if unavailable_fillings.exists():
             unavailable_titles.extend([f.title for f in unavailable_fillings])
         
-        cannot_takeaway = is_takeaway and not Restaurant.objects.last().allow_takeaway
+        cannot_takeaway = is_takeaway and not restaurant.allow_takeaway
         
         if cannot_takeaway:
             unavailable_titles.append("กล่อง")

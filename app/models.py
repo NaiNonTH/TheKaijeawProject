@@ -25,6 +25,7 @@ class Order(models.Model):
         self.save()
 
 class Restaurant(models.Model):
-    queue_capacity = models.IntegerField()
+    queue_capacity = models.PositiveSmallIntegerField(default=20)
+    max_fillings = models.PositiveSmallIntegerField(default=3)
     is_opened = models.BooleanField(default=False)
     allow_takeaway = models.BooleanField(default=True)
