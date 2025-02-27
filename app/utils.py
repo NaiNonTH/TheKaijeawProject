@@ -111,6 +111,7 @@ def send_order_changes(instance):
         {
             "type": "order_update",
             "message": {
+                "type": "order_added",
                 "id": instance.pk,
                 "queue_number": instance.queue_number,
                 "fillings": fillings_data,
