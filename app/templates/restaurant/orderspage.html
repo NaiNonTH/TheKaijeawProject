@@ -13,7 +13,7 @@
     {% include '../header.html' %}
     <main>
         <h2>คำสั่งซื้อที่ยังไม่เสร็จ</h2>
-        <div class="orders">
+        <div id="orders">
             {% for order in orders %}
                 <div class="order">
                     <div class="order-queue-no">{{ order.queue_number }}</div>
@@ -46,11 +46,36 @@
     </main>
     {% include '../restaurant-nav.html' %}
     <script>
+        const orders = document.getElementById("orders");
         const socket = new WebSocket(`ws://${location.host}/ws/order-watcher`)
+
+        function createOrderCard(data) {
+            return `<div class="order">
+                <div class="order-queue-no">${data.queue_number}</div>
+                <ul class="order-content">
+                    <li><strong>ไส้:</strong>
+                        ${data.fillings.length == 0
+                            ? "-"
+                            : data.fillings.join(" ")
+                        }
+                    </li>
+                    <li><strong>ไข่:</strong> ${data.egg} ฟอง</li>
+                    <li>
+                        ${data.box ? "<strong>ใส่กล่อง</strong>" : ""}
+                    </li>
+                </ul>
+                <form action="{% url 'mark_order_as_done' %}" method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="id" value="${data.id}">
+                    <button type="submit">เสร็จสิ้น</button>
+                </form>
+            </div>`
+        }
 
         socket.addEventListener("message", function(event) {
             const data = JSON.parse(event.data)
-            console.log(data.test);
+            console.log(data);
+            orders.insertAdjacentHTML("beforeend", createOrderCard(data));
         });
 
         window.addEventListener("close", function() {

@@ -74,6 +74,12 @@ TEMPLATES = [
 
 ASGI_APPLICATION = 'TheKaijeawProject.asgi.application'
 
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels.layers.InMemoryChannelLayer",
+    },
+}
+
 
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases

@@ -7,8 +7,8 @@ from django.db.models.aggregates import Sum, Count
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import user_passes_test
 
-from .models import Filling, Egg, Order, Restaurant, Validator
-from .utils import OrderBuilder
+from .models import Filling, Egg, Order, Restaurant
+from .utils import OrderBuilder, send_order_changes
 
 from datetime import date
 
@@ -67,7 +67,9 @@ def save_order(request: HttpRequest):
         request.session['queue_number'] = new_order.queue_number
         request.session['price'] = new_order.egg_amount.price
 
-    except Validator.NoQueueLeftError:
+        send_order_changes(new_order)
+
+    except OrderBuilder.NoQueueLeftError:
         request.session['success'] = False
         request.session['error_message'] = "ไม่มีคิวว่าง"
     

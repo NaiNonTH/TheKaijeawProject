@@ -1,4 +1,4 @@
-from .models import Order, Filling, Egg, Restaurant, Validator
+from .models import Order, Filling, Egg, Restaurant
 
 class OrderBuilder: # builder class (Builder Design Pattern)
     __order = None
@@ -87,7 +87,7 @@ class OrderBuilder: # builder class (Builder Design Pattern)
             max_queue_number = Restaurant.objects.last().queue_capacity
 
             if len(unavailable_queues) == max_queue_number:
-                raise Validator.NoQueueLeftError
+                raise self.NoQueueLeftError
 
             queue_number = unavailable_queues[-1] % max_queue_number + 1
 
@@ -95,3 +95,27 @@ class OrderBuilder: # builder class (Builder Design Pattern)
                 queue_number = (queue_number + 1) % max_queue_number
 
         return queue_number
+    
+    class NoQueueLeftError(Exception): ...
+
+from channels.layers import get_channel_layer
+from asgiref.sync import async_to_sync
+
+def send_order_changes(instance):
+    channel_layer = get_channel_layer()
+
+    fillings_data = [filling.title for filling in instance.fillings.all()]
+
+    async_to_sync(channel_layer.group_send)(
+        "order_watcher",
+        {
+            "type": "order_update",
+            "message": {
+                "id": instance.pk,
+                "queue_number": instance.queue_number,
+                "fillings": fillings_data,
+                "egg": instance.egg_amount.amount,
+                "box": instance.is_takeaway
+            }
+        }
+    )

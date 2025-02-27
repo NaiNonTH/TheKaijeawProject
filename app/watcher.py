@@ -1,21 +1,25 @@
 import json
 from channels.generic.websocket import WebsocketConsumer
 
-from django.db.models import signals
-from .models import Order
+from asgiref.sync import async_to_sync
 
 class OrderWatcher(WebsocketConsumer):
     def connect(self):
         self.accept()
 
-        print("opened")
-
-        self.send(text_data=json.dumps({
-            "test": "Hello, world"
-        }))
+        async_to_sync(self.channel_layer.group_add)(
+            "order_watcher",
+            self.channel_name
+        )
 
     def disconnect(self, code):
-        print("closed")
+        async_to_sync(self.channel_layer.group_discard)(
+            "order_watcher",
+            self.channel_name
+        )
 
     def receive(self, text_data=None, bytes_data=None):
         return super().receive(text_data, bytes_data)
+
+    def order_update(self, event):
+        self.send(text_data=json.dumps(event["message"]))

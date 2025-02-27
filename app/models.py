@@ -1,5 +1,5 @@
 from django.db import models
-from django.contrib.auth.hashers import make_password
+
 # Create your models here.
 
 class Filling(models.Model):
@@ -28,12 +28,3 @@ class Restaurant(models.Model):
     queue_capacity = models.IntegerField()
     is_opened = models.BooleanField(default=False)
     allow_takeaway = models.BooleanField(default=True)
-
-class Validator:
-    class NoQueueLeftError(ValueError): ...
-    
-    class NoEggAmountSpecifiedError(ValueError): ...
-    
-    class TooManyFillingsError(ValueError): ...
-    
-    class IncompletedRequest(ValueError): ...
