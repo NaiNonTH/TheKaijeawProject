@@ -4,15 +4,15 @@ from django.db import models
 
 class Filling(models.Model):
     name = models.CharField(max_length=100, primary_key=True)
-    title= models.TextField(default="Untitled")
+    title = models.TextField(default="Untitled")
     is_available = models.BooleanField(default=True)
 
 class Egg(models.Model):
-    amount = models.IntegerField(primary_key=True)
-    price = models.IntegerField()
+    amount = models.PositiveSmallIntegerField(primary_key=True)
+    price = models.PositiveSmallIntegerField()
 
 class Order(models.Model):
-    queue_number = models.IntegerField()
+    queue_number = models.PositiveSmallIntegerField()
     date = models.DateTimeField(auto_now_add=True)
     is_takeaway = models.BooleanField(default=False)
     is_completed = models.BooleanField(default=False)
