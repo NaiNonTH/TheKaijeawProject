@@ -11,6 +11,7 @@ from .models import Filling, Egg, Order, Restaurant
 from .utils import OrderBuilder, send_order_changes
 
 from datetime import date
+import json
 
 # Create your views here.
 
@@ -18,8 +19,11 @@ from datetime import date
 def menu_page(request: HttpRequest):
     restaurant = Restaurant.objects.last()
 
+    # ถ้าร้านปิด หรือ admin ยังไม่ได้เพิ่มข้อมูลร้านค้า
     if restaurant is None or not restaurant.is_opened:
         return render(request, "customer/closed.html")
+
+    # เลือกไส้ จำนวนไข่ และกล่อง(จากร้าน) ที่เก็บไว้ใน database มาใช้แสดงเมนู
 
     fillings = Filling.objects.all()
     eggs = Egg.objects.all()
@@ -30,12 +34,19 @@ def menu_page(request: HttpRequest):
         "restaurant": restaurant
     }
 
-    if "success" in request.session and not request.session['success']:
-        context["error_message"] = request.session['error_message']
+    response = render(request, "customer/menupage.html", context)
 
-        request.session.flush()
+    # เมื่อถูก redirect กลับมาจาก save_order() เพราะ input ไม่ผ่าน
+    # ให้แสดงข้อความ error จาก cookie ที่เก็บไว้จาก save_order()
+    if request.COOKIES.get("success", "True") == "False":
+        context["error_message"] = json.loads(request.COOKIES.get("error_message"))
+        
+        response = render(request, "customer/menupage.html", context)
 
-    return render(request, "customer/menupage.html", context)
+        response.delete_cookie("error_message")
+        response.delete_cookie("success")
+
+    return response
 
 @require_POST
 def save_order(request: HttpRequest):
@@ -45,16 +56,24 @@ def save_order(request: HttpRequest):
     fillings_list = request.POST.getlist("filling")
     is_takeaway = "is_takeaway" in request.POST
 
-                                 # ตรวจสอบข้อมูลแล้วสร้าง builder class
-                                 # พร้อมกำหนดจำนวนไข่ให้ object
+    # ตรวจสอบข้อมูลแล้วสร้าง builder object เมื่อ input ถูกต้อง
+    # รวมทั้งกำหนดจำนวนไข่ให้ object
+    # แต่สร้างเฉพาะ dict ของข้อความ error เมื่อไม่ถูกต้อง
     order_builder, error_message = OrderBuilder.validate_and_create(request.POST)
 
+    # ถ้า input ไม่ถูกต้อง ให้ redirect กลับไปหน้าเมนูพร้อมแสดงข้อความ error
     if order_builder is None:
-        request.session['success'] = False
-        request.session['error_message'] = error_message
+        response = HttpResponseRedirect("/")
 
-        return HttpResponseRedirect("/")
+        # ใช้ cookie เก็บข้อมูลของ error สำหรับแสดงในหน้า view ถัดไป
+        response.set_cookie("success", "False")
+        response.set_cookie("error_message", json.dumps(error_message)) # ต้อง serialize ข้อมูล ใช้ json.dumps()
 
+        return response
+
+    response = HttpResponseRedirect("queue")
+
+    # ใช้ try..except ดักกรณีที่คิวเต็ม
     try:
         new_order = order_builder                   \
                     .add_fillings(fillings_list)    \
@@ -63,78 +82,101 @@ def save_order(request: HttpRequest):
         
         new_order.save()
 
-        request.session['success'] = True
-        request.session['queue_number'] = new_order.queue_number
-        request.session['price'] = new_order.egg_amount.price
+        # คำสั่งซื้อใหม่ถูกเก็บเข้า database สำเร็จ
+        # เก็บหมายเลขคิวกับราคาไว้สำหรับหน้า queue
+        response.set_cookie("success", "True")
+        response.set_cookie("queue_number", new_order.queue_number)
+        response.set_cookie("price", new_order.egg_amount.price)
 
         send_order_changes(new_order)
 
     except OrderBuilder.NoQueueLeftError:
-        request.session['success'] = False
-        request.session['error_message'] = "ไม่มีคิวว่าง"
+        response.set_cookie("success", "False")
+        response.set_cookie("error_message", "ไม่มีคิวว่าง")
     
-    return HttpResponseRedirect("queue")
+    return response
 
 @require_GET
 def queue_page(request: HttpRequest):
-    if "success" not in request.session:
+    # ถ้าลูกค้าเข้ามาโดยที่ยังไม่ได้สั่ง ให้ redirect ไปที่หน้าเมนู
+    if "success" not in request.COOKIES:
         return HttpResponseRedirect("/")
     
-    if request.session['success']:
+    # คำสั่งซื้อสำเร็จ (คิวไม่เต็ม)
+    if request.COOKIES.get("success", "True") == "True":
         context = {
-            "queue_number": request.session['queue_number'],
-            "price": request.session['price']
+            "queue_number": request.COOKIES.get('queue_number'),
+            "price": request.COOKIES.get('price')
         }
+
+        # ไม่ลบคุกกี้ เผื่อลูกค้าอยาก refresh หน้า queue เลขจะได้ไม่หายจนกว่าจะสั่งใหม่
 
         return render(request, "customer/queuepage.html", context)
     else:
         context = {
-            "message": request.session['error_message']
+            "message": request.COOKIES.get('error_message')
         }
 
-        request.session.flush()
+        response = render(request, "customer/error.html", context)
+        response.delete_cookie("success")
+        response.delete_cookie("error_message")
 
-        return render(request, "customer/error.html", context)
+        return response
 
 def restaurant_section(request):
     return HttpResponseRedirect("/restaurant/orders")
 
+# ตรวจสอบการยืนยันตัวตนของผู้ใช้
 def user_check(user):
+    # ยังไม่ล็อกอิน
     if not user.is_authenticated:
         return False
+    # เป็น admin หรือ staff (ร้านค้า)
     if user.is_superuser or user.is_staff:
         return True
+    # อยู่ในกลุ่ม Staff
     return user.groups.filter(name='Staff').exists()
 
 def login_view(request: HttpRequest):
+    # ถ้าล็อกอินแล้ว ให้ข้ามการยืนยันตัวตน
     if request.user.is_authenticated:
         return HttpResponseRedirect("/restaurant/orders")
-    else:
-        context = {}
-
-        if "next" in request.GET:
-            context["next"] = request.GET["next"]
-
-        if "login_error" in request.session:
-            context["error"] = request.session["login_error"]
-            request.session.flush()
-
-        return render(request, 'restaurant/login.html', context)
     
+    # ถ้าเคยล็อกอินแล้วไม่ผ่าน ให้ view แสดงข้อความ error ผ่าน context นี้
+    context = {
+        "error": request.COOKIES.get("login_error") == "True" # เป็น boolean True ถ้าล็อกอินไม่สำเร็จ
+    }
+
+    response = render(request, 'restaurant/login.html', context)
+    response.delete_cookie("login_error")
+
+    return response
+
+@require_POST
 def restaurant_authentication(request: HttpRequest):
     username = request.POST.get('username')
     password = request.POST.get('password')
 
     user = authenticate(request, username=username, password=password)
 
+    # ถ้ามีชื่อ user ในระบบและ password ถูกต้อง ให้ล็อกอินผู้ใช้นั้นแล้วให้เข้าสู่ระบบได้
     if user is not None:
         login(request, user)
         
         return redirect('/restaurant/orders')
     else:
-        request.session["login_error"] = True
+        # ถ้า request มาจากหน้าล็อกอิน
+        if request.resolver_match.view_name == "login":
+            redirect_url = request.get_full_path()
+        else:
+            # ใช้ default
+            redirect_url = "/restaurant/login"
 
-        return HttpResponseRedirect("/restaurant/login")
+        # ให้ผู้ใช้กลับไปล็อกอินใหม่
+        response = HttpResponseRedirect(redirect_url)
+        response.set_cookie("login_error", "True")
+
+        return response
 
 def logout_view(request):
     logout(request)

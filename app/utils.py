@@ -19,8 +19,8 @@ class OrderBuilder: # builder class (Builder Design Pattern)
             user_errors.append("ท่านไม่ได้ระบุจำนวนไข่")
 
         restaurant = Restaurant.objects.last()
-
         fillings_list = post_data.getlist("filling")
+
         if len(fillings_list) > restaurant.max_fillings:
             user_errors.append(f"ท่านเลือกไส้เกิน {restaurant.max_fillings} ตัวเลือก")
 
