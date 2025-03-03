@@ -6,7 +6,6 @@
     {% include '../metadata.html' %}
     <link rel="stylesheet" href="{% static 'restaurant/main.css' %}">
     <link rel="stylesheet" href="{% static 'restaurant/statistics.css' %}">
-    <script src="https://cdn.plot.ly/plotly-3.0.1.min.js" charset="utf-8"></script>
     <title>Statistics Page</title>
 </head>
 <body class="restaurant">
@@ -41,6 +40,7 @@
         </div>
     </main>
     {% include '../restaurant-nav.html' %}
+    <script src="https://cdn.plot.ly/plotly-3.0.1.min.js" charset="utf-8"></script>
     <script>
         var fillingsData = [{
             x: {{ fillings_graph.x|safe }},
