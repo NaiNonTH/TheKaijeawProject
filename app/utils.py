@@ -70,10 +70,8 @@ class OrderBuilder: # builder class (Builder Design Pattern)
         return self
 
     def add_fillings(self, fillings_list):
-        for filling_name in fillings_list:
-            filling = Filling.objects.get(pk=filling_name)
-            self.__order.fillings.add(filling)
-
+        fillings = Filling.objects.filter(name__in=fillings_list)
+        self.__order.fillings.add(*fillings)
         return self
     
     def build(self):
