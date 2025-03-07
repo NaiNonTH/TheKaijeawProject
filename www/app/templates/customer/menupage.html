@@ -26,7 +26,7 @@
         {% endif %}
         <form action="{% url 'save_order' %}" method="post">
             <fieldset>
-                <legend>เลือกไส้ (สามารถเลือกได้มากที่สุด 3 ไส้)</legend>
+                <legend>เลือกไส้ (สามารถเลือกได้มากที่สุด {{ restaurant.max_fillings }} ไส้)</legend>
                 <div class="checkbox-group">
                     {% for filling in fillings %}
                         <div>
