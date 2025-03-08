@@ -3,6 +3,7 @@
     const noOrder = document.getElementById("no-orders-text")
     
     const socket = new WebSocket(`ws://${location.host}/ws/order-watcher`);
+    const audio = new Audio("/static/bell.wav");
 
     const markOrderAsDone = function(event) {
         event.preventDefault();
@@ -26,6 +27,8 @@
                 .addEventListener("click", markOrderAsDone);
 
             orders.appendChild(orderCard.firstChild);
+
+            audio.play();
         }
         else if (data.type === "order_marked_as_done") {
             if (data.success) {
