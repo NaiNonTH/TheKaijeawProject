@@ -12,10 +12,15 @@
 <body class="restaurant">
     {% include '../header.html' %}
     <main>
+        {% if status_updated %}
+            <div id="alert">
+                <p>อัพเดตข้อมูลของเมนูและร้านเรียบร้อย <a href="javascript:document.getElementById('alert').remove()">ซ่อนกล่องแจ้งเตือน</a></p>
+            </div>
+        {% endif %}
         <h2>คำสั่งซื้อที่ยังไม่เสร็จ</h2>
         <div id="orders">
             {% for order in orders %}
-                <div class="order" id="order-{{ order.pk }}">
+            <div class="order" id="order-{{ order.pk }}">
                     <div class="order-queue-no">{{ order.queue_number }}</div>
                     <ul class="order-content">
                         <li><strong>ไส้:</strong>

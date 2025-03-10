@@ -50,3 +50,29 @@
     margin-left: auto;
     padding: 0.5em 1.5em;
 }
+
+#alert {
+    position: sticky;
+    top: 0;
+    z-index: 99;
+    
+    background: #caffca;
+    border: 1px solid #388a38;
+
+    animation: hide 0s 3s forwards;
+}
+
+#alert p {
+    max-width: 48rem;
+    padding: 0.75em 1rem;
+    margin: auto;
+}
+
+@keyframes hide {
+    from {
+        display: block;
+    }
+    to {
+        display: none;
+    }
+}
