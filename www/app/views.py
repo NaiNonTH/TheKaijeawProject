@@ -199,10 +199,14 @@ def orders_page(request: HttpRequest):
     orders = list(Order.objects.filter(is_completed=False).all())
 
     context = {
-        "orders": orders
+        "orders": orders,
+        "status_updated": request.COOKIES.get("status_updated")
     }
+    
+    response = render(request, "restaurant/orderspage.html", context)
+    response.delete_cookie("status_updated")
 
-    return render(request, "restaurant/orderspage.html", context)
+    return response
 
 @user_passes_test(user_check, login_url='/restaurant/login/')
 @require_POST
@@ -226,8 +230,10 @@ def mark_order_as_done(request: HttpRequest):
 
 @user_passes_test(user_check, login_url='/restaurant/login/')
 @require_POST
-def update_filling_availability(request: HttpRequest):
+def update_status(request: HttpRequest):
     req_fillings =  request.POST.getlist("filling")
+    req_allow_takeaway = "box" in request.POST
+    req_is_opened = "is_opened" in request.POST
 
     Filling.objects                     \
         .filter(name__in=req_fillings)  \
@@ -237,25 +243,14 @@ def update_filling_availability(request: HttpRequest):
         .exclude(name__in=req_fillings) \
         .update(is_available=False)
     
-    return HttpResponseRedirect("/restaurant/menus")
-
-@user_passes_test(user_check, login_url='/restaurant/login/') 
-@require_POST
-def toggle_takeaway(request: HttpRequest):
-    req_allow_takeaway = "box" in request.POST
-
     Restaurant.objects.update(allow_takeaway=req_allow_takeaway)
-    
-    return HttpResponseRedirect("/restaurant/menus")
-
-@user_passes_test(user_check, login_url='/restaurant/login/')
-@require_POST
-def toggle_restaurant(request: HttpRequest):
-    req_is_opened = "is_opened" in request.POST
 
     Restaurant.objects.update(is_opened=req_is_opened)
-    
-    return HttpResponseRedirect("/restaurant/menus")
+
+    response = HttpResponseRedirect("/restaurant/orders")
+    response.set_cookie("status_updated", True)
+
+    return response
 
 @user_passes_test(user_check, login_url='/restaurant/login/')
 @require_GET

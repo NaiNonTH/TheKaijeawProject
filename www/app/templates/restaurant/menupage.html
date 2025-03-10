@@ -15,7 +15,7 @@
         <div>
             <h2>เปิด/ปิดไส้</h2>
             <p>เลือกว่าจะให้ลูกค้าสั่งไส้อะไรได้บ้าง</p>
-            <form action="{% url 'update_filling_availability' %}" method="post">
+            <form action="{% url 'update_status' %}" method="post">
                 <div class="checkbox-group">
                     {% for filling in fillings %}
                         <div>
@@ -31,16 +31,8 @@
                         {% endif %}
                     {% endfor %}
                 </div>
-                {% csrf_token %}
-                <div class="button-div">
-                    <button type="submit">อัพเดต</button>
-                </div>
-            </form>
-        </div>
-        <div>
-            <h2>ซื้อกลับบ้าน</h2>
-            <p>อนุญาตให้ลูกค้าสั่งแบบใส่กล่องกลับบ้านได้</p>
-            <form action="{% url 'toggle_takeaway' %}" method="post">
+                <h2>ซื้อกลับบ้าน</h2>
+                <p>อนุญาตให้ลูกค้าสั่งแบบใส่กล่องกลับบ้านได้</p>
                 <div class="checkbox-group">
                     <div>
                         {% if restaurant.allow_takeaway %}
@@ -51,16 +43,8 @@
                         <label for="box">อนุญาตใส่กล่อง</label>
                     </div>
                 </div>
-                {% csrf_token %}
-                <div class="button-div">
-                    <button type="submit">อัพเดต</button>
-                </div>
-            </form>
-        </div>
-        <div>
-            <h2>เปิด/ปิดร้าน</h2>
-            <p>เมื่อปิดร้านแล้ว ลูกค้าจะไม่สามารถเข้าเลือกเมนูได้ ท่านต้องเปิดร้านก่อน ลูกค้าจึงจะเข้าเลือกเมนูและส่งคำสั่งซื้อได้</p>
-            <form action="{% url 'toggle_restaurant' %}" method="post">
+                <h2>เปิด/ปิดร้าน</h2>
+                <p>เมื่อปิดร้านแล้ว ลูกค้าจะไม่สามารถเข้าเลือกเมนูได้ ท่านต้องเปิดร้านก่อน ลูกค้าจึงจะเข้าเลือกเมนูและส่งคำสั่งซื้อได้</p>
                 <div class="checkbox-group">
                     <div>
                         {% if restaurant.is_opened %}
