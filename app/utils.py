@@ -86,7 +86,7 @@ class OrderBuilder: # builder class (Builder Design Pattern)
 
             max_queue_number = Restaurant.objects.last().queue_capacity
 
-            if len(unavailable_queues) == max_queue_number:
+            if len(unavailable_queues) >= max_queue_number:
                 raise self.NoQueueLeftError
 
             queue_number = unavailable_queues[-1] % max_queue_number + 1
