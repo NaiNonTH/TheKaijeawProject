@@ -78,15 +78,20 @@ class OrderBuilder: # builder class (Builder Design Pattern)
         return self.__order
 
     def get_queue_number(self):
+        restaurant = Restaurant.objects.last()
+
+        if restaurant.queue_capacity == 0:
+            raise self.NoQueueLeftError
+        
         if len(Order.objects.filter(is_completed=False).all()) == 0:
             queue_number = 1
         else:
             incompleted_orders = Order.objects.filter(is_completed=False)
             unavailable_queues = [order.queue_number for order in list(incompleted_orders.all())]
 
-            max_queue_number = Restaurant.objects.last().queue_capacity
+            max_queue_number = restaurant.queue_capacity
 
-            if len(unavailable_queues) == max_queue_number:
+            if len(unavailable_queues) >= max_queue_number:
                 raise self.NoQueueLeftError
 
             queue_number = unavailable_queues[-1] % max_queue_number + 1

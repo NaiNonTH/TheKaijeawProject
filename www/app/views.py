@@ -38,7 +38,7 @@ def menu_page(request: HttpRequest):
 
     # เมื่อถูก redirect กลับมาจาก save_order() เพราะ input ไม่ผ่าน
     # ให้แสดงข้อความ error จาก cookie ที่เก็บไว้จาก save_order()
-    if request.COOKIES.get("success", "True") == "False":
+    if request.COOKIES.get("success", "True") == "False" and request.COOKIES.get("error_type", "") == "INVALID_REQUEST":
         context["error_message"] = json.loads(request.COOKIES.get("error_message"))
         
         response = render(request, "customer/menupage.html", context)
@@ -56,31 +56,32 @@ def save_order(request: HttpRequest):
     fillings_list = request.POST.getlist("filling")
     is_takeaway = "is_takeaway" in request.POST
 
-    # ตรวจสอบข้อมูลแล้วสร้าง builder object เมื่อ input ถูกต้อง
-    # รวมทั้งกำหนดจำนวนไข่ให้ object
-    # แต่สร้างเฉพาะ dict ของข้อความ error เมื่อไม่ถูกต้อง
-    order_builder, error_message = OrderBuilder.validate_and_create(request.POST)
-
-    # ถ้า input ไม่ถูกต้อง ให้ redirect กลับไปหน้าเมนูพร้อมแสดงข้อความ error
-    if order_builder is None:
-        response = HttpResponseRedirect("/")
-
-        # ใช้ cookie เก็บข้อมูลของ error สำหรับแสดงในหน้า view ถัดไป
-        response.set_cookie("success", "False")
-        response.set_cookie("error_message", json.dumps(error_message)) # ต้อง serialize ข้อมูล ใช้ json.dumps()
-
-        return response
-
-    response = HttpResponseRedirect("queue")
-
     # ใช้ try..except ดักกรณีที่คิวเต็ม
     try:
+        # ตรวจสอบข้อมูลแล้วสร้าง builder object เมื่อ input ถูกต้อง
+        # รวมทั้งกำหนดจำนวนไข่ให้ object
+        # แต่สร้างเฉพาะ dict ของข้อความ error เมื่อไม่ถูกต้อง
+        order_builder, error_message = OrderBuilder.validate_and_create(request.POST)
+    
+        # ถ้า input ไม่ถูกต้อง ให้ redirect กลับไปหน้าเมนูพร้อมแสดงข้อความ error
+        if order_builder is None:
+            response = HttpResponseRedirect("/")
+    
+            # ใช้ cookie เก็บข้อมูลของ error สำหรับแสดงในหน้า view ถัดไป
+            response.set_cookie("success", "False")
+            response.set_cookie("error_type", "INVALID_REQUEST")
+            response.set_cookie("error_message", json.dumps(error_message)) # ต้อง serialize ข้อมูล ใช้ json.dumps()
+    
+            return response
+
         new_order = order_builder                   \
                     .add_fillings(fillings_list)    \
                     .takeaway(is_takeaway)          \
                     .build()
         
         new_order.save()
+        
+        response = HttpResponseRedirect("queue")
 
         # คำสั่งซื้อใหม่ถูกเก็บเข้า database สำเร็จ
         # เก็บหมายเลขคิวกับราคาไว้สำหรับหน้า queue
@@ -91,8 +92,9 @@ def save_order(request: HttpRequest):
         send_order_changes(new_order)
 
     except OrderBuilder.NoQueueLeftError:
+        response = HttpResponseRedirect("queue")
         response.set_cookie("success", "False")
-        response.set_cookie("error_message", "ไม่มีคิวว่าง")
+        response.set_cookie("error_type", "NO_QUEUE_LEFT")
     
     return response
 
@@ -113,13 +115,19 @@ def queue_page(request: HttpRequest):
 
         return render(request, "customer/queuepage.html", context)
     else:
+        if request.COOKIES.get('error_type') == "NO_QUEUE_LEFT":
+            message = "ไม่มีคิวว่าง"
+        else:
+            message = "เกิดข้อผิดพลาด"
+
         context = {
-            "message": request.COOKIES.get('error_message')
+            "message": message
         }
 
         response = render(request, "customer/error.html", context)
+
         response.delete_cookie("success")
-        response.delete_cookie("error_message")
+        response.delete_cookie("error_type")
 
         return response
 
