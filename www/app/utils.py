@@ -24,17 +24,12 @@ class OrderBuilder: # builder class (Builder Design Pattern)
         if len(fillings_list) > restaurant.max_fillings:
             user_errors.append(f"ท่านเลือกไส้เกิน {restaurant.max_fillings} ตัวเลือก")
 
-        if len(user_errors) > 0:
-            return None, {
-                "intro_text": "ข้อมูลที่กรอกไม่สมบูรณ์เนื่องจาก...",
-                "middle_list": user_errors,
-                "outro_text": "กรุณากรอกข้อมูลให้ครบถ้วนแล้วลองใหม่อีกครั้ง"
-            }
-
         try:
             egg_amount_obj = Egg.objects.get(pk=post_data["egg"])
         except Egg.DoesNotExist:
             user_errors.append("ไม่พบจำนวนไข่ที่ระบุ")
+            
+        if len(user_errors) > 0:
             return None, {
                 "intro_text": "ข้อมูลที่กรอกไม่สมบูรณ์เนื่องจาก...",
                 "middle_list": user_errors,
