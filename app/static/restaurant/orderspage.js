@@ -7,6 +7,15 @@
 
     const markOrderAsDone = function(event) {
         event.preventDefault();
+
+        const confirmMarkAsDone = window.confirm(`
+            คุณต้องการยืนยันคำสั่งซื้อหมายเลข ${event.currentTarget.dataset.queueNo} หรือไม่\n
+            ถ้าคุณยืนยันแล้ว คุณจะไม่สามารถเรียกกลับมาได้อีก`
+        );
+
+        if (!confirmMarkAsDone)
+            return;
+
         const data = {
             id: event.currentTarget.dataset.id
         }
