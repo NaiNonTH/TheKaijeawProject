@@ -37,7 +37,13 @@ class OrderWatcher(WebsocketConsumer):
                 "message": str(e)
             }
 
-        self.send(text_data=json.dumps(result))
+        async_to_sync(self.channel_layer.group_send)(
+            "order_watcher",
+            {
+                "type": "order_update",
+                "message": result
+            }
+        )
 
 
     def order_update(self, event):
