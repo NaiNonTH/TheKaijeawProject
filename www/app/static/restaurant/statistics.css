@@ -58,6 +58,26 @@ input[type="date"] {
     font-family: "Mitr", sans-serif;
 }
 
+.error {
+    opacity: 1;
+    color: #a00;
+    
+    display: flex;
+    gap: 0.5ch;
+    align-items: center;
+}
+
+.error::before {
+    content: "";
+    background: no-repeat url("../not-allowed.svg") center / contain;
+    width: 2em;
+    height: 2em;
+}
+
+form > * {
+    margin-right: 0.5ch;
+}
+
 @media (min-width: 32rem) {
     .stats-box {
         grid-template-columns: repeat(2, 1fr);

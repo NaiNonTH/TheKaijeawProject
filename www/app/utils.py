@@ -17,17 +17,17 @@ class OrderBuilder: # builder class (Builder Design Pattern)
 
         if "egg" not in post_data:
             user_errors.append("ท่านไม่ได้ระบุจำนวนไข่")
+        else:
+            try:
+                egg_amount_obj = Egg.objects.get(pk=post_data["egg"])
+            except Egg.DoesNotExist:
+                user_errors.append("ไม่พบจำนวนไข่ที่ระบุ")
 
         restaurant = Restaurant.objects.last()
         fillings_list = post_data.getlist("filling")
 
         if len(fillings_list) > restaurant.max_fillings:
             user_errors.append(f"ท่านเลือกไส้เกิน {restaurant.max_fillings} ตัวเลือก")
-
-        try:
-            egg_amount_obj = Egg.objects.get(pk=post_data["egg"])
-        except Egg.DoesNotExist:
-            user_errors.append("ไม่พบจำนวนไข่ที่ระบุ")
             
         if len(user_errors) > 0:
             return None, {

@@ -265,9 +265,16 @@ def update_status(request: HttpRequest):
 def statistics_page(request: HttpRequest):
     filtered = request.method == "GET" and "date" in request.GET
 
+    invalid_date = False
+
     if filtered:
         year, month, day = request.GET["date"].split("-")
-        filter_date = date(int(year), int(month), int(day))
+
+        try:
+            filter_date = date(int(year), int(month), int(day))
+        except:
+            invalid_date = True
+            filter_date = date.today()
     else:
         filter_date = date.today()
 
@@ -301,6 +308,7 @@ def statistics_page(request: HttpRequest):
         "egg_count": counts["egg_count"],
         "grossing": counts["grossing"],
         "filter_date": str(filter_date),
+        "invalid_date": invalid_date,
         "fillings_graph": {
             "x": fillings_title,
             "y": fillings_count

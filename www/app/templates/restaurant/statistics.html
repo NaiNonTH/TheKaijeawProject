@@ -11,6 +11,9 @@
 <body class="restaurant">
     {% include '../header.html' %}
     <main>
+        {% if invalid_date %}
+            <p class="error">วันที่ ๆ ท่านกรอกไม่ถูกต้อง</p>
+        {% endif %}
         <form action="" method="get">
             <label for="date">ดูสถิติของวันที่</label>
             <input type="date" name="date" id="date" value="{{ filter_date }}">

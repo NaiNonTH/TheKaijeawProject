@@ -40,7 +40,7 @@
                     <form action="{% url 'mark_order_as_done' %}" method="post">
                         {% csrf_token %}
                         <input type="hidden" name="id" value="{{ order.pk }}">
-                        <button type="submit" data-id="{{ order.pk }}">เสร็จสิ้น</button>
+                        <button type="submit" data-queue-no="{{ order.queue_number }}" data-id="{{ order.pk }}">เสร็จสิ้น</button>
                     </form>
                 </div>
             {% endfor %}
@@ -71,7 +71,7 @@
                 <form action="{% url 'mark_order_as_done' %}" method="post">
                     {% csrf_token %}
                     <input type="hidden" name="id" value="${data.id}">
-                    <button type="submit" data-id="${data.id}">เสร็จสิ้น</button>
+                    <button type="submit" data-queue-no="${data.queue_number}" data-id="${data.id}">เสร็จสิ้น</button>
                 </form>
             </div>`
         }
