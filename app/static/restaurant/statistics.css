@@ -74,6 +74,10 @@ input[type="date"] {
     height: 2em;
 }
 
+form > * {
+    margin-right: 0.5ch;
+}
+
 @media (min-width: 32rem) {
     .stats-box {
         grid-template-columns: repeat(2, 1fr);
