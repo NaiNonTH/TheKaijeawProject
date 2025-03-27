@@ -32,7 +32,7 @@
             const orderCard = document.createElement("div");
             orderCard.innerHTML = createOrderCard(data);
 
-            orderCard.querySelector("form button[type='submit']")
+            orderCard.querySelector("#orders form button[type='submit']")
                 .addEventListener("click", markOrderAsDone);
 
             orders.appendChild(orderCard.firstChild);
@@ -57,7 +57,7 @@
         socket.close();
     });
 
-    document.querySelectorAll("form button[type='submit']")
+    document.querySelectorAll("#orders form button[type='submit']")
         .forEach(function(button) {
             button.addEventListener("click", markOrderAsDone);
         });

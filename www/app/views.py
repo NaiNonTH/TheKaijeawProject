@@ -186,6 +186,7 @@ def restaurant_authentication(request: HttpRequest):
 
         return response
 
+@require_POST
 def logout_view(request):
     logout(request)
     return redirect('login')

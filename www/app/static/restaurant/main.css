@@ -28,13 +28,22 @@ nav li {
     flex: 1;
 }
 
+nav button {
+    width: 100%;
+    border-radius: 0;
+    border: none;
+    cursor: pointer;
+    font: inherit;
+}
+
 nav svg {
     margin: 0.25em auto;
     width: 1.75rem;
     height: 1.75rem;
 }
 
-nav a {
+nav a,
+nav button {
     display: block;
     padding: 0.25rem 0;
     text-align: center;
@@ -44,15 +53,18 @@ nav a {
     font-size: 0.8em;
 }
 
-nav a:hover {
+nav a:hover,
+nav button:hover {
     background: var(--theme-bg-lighter);
 }
 
-nav a > * {
+nav a > *,
+nav button > * {
     display: block;
 }
 
-nav li[aria-current="true"] a {
+nav li[aria-current="true"] a,
+nav li[aria-current="true"] button {
     border-bottom: 2px solid var(--theme-bg-lightest);
     background: linear-gradient(
         #0000,
