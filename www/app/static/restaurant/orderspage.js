@@ -57,7 +57,7 @@
         socket.close();
     });
 
-    document.querySelectorAll("form button[type='submit']")
+    orders.querySelectorAll("form button[type='submit']")
         .forEach(function(button) {
             button.addEventListener("click", markOrderAsDone);
         });
