@@ -3,4 +3,3 @@
 .git
 .venv
 .env
-**/staticfiles/

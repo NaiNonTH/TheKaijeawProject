@@ -1,7 +1,7 @@
-FROM python:3.13.2-slim
+FROM python:3.12-slim
 
-ENV PYTHONDONTWRITEBYTECODE 1
-ENV PYTHONUNBUFFERED 1
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
 
 WORKDIR /app
 
@@ -10,9 +10,10 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY ./www /app
 
-RUN python manage.py collectstatic --noinput
-RUN python manage.py migrate
+RUN apt-get update && apt-get install -y --no-install-recommends \
+   libmariadb-dev-compat gcc pkg-config \
+&& rm -rf /var/lib/apt/lists/*
 
-EXPOSE 8080
+RUN pip install --no-cache-dir mysqlclient
 
-CMD ["daphne", "-b", "0.0.0.0", "-p", "8000", "TheKaijeawProject.asgi:application"]
+EXPOSE 8000
