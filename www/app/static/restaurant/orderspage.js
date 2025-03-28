@@ -32,7 +32,7 @@
             const orderCard = document.createElement("div");
             orderCard.innerHTML = createOrderCard(data);
 
-            orderCard.querySelector("#orders form button[type='submit']")
+            orderCard.querySelector("form button[type='submit']")
                 .addEventListener("click", markOrderAsDone);
 
             orders.appendChild(orderCard.firstChild);
