@@ -4,6 +4,7 @@
 
 ## สิ่งที่ต้องใช้
 * Python
+* Docker Hub หรือ Docker Desktop
 * git
 
 ## Run บนเครื่องตัวเอง
