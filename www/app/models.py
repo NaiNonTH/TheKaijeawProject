@@ -18,7 +18,7 @@ class Order(models.Model):
     is_completed = models.BooleanField(default=False)
 
     fillings = models.ManyToManyField(Filling, blank=True)
-    egg_amount = models.ForeignKey(Egg, on_delete=models.DO_NOTHING)
+    egg_amount = models.ForeignKey(Egg, on_delete=models.CASCADE)
 
     def mark_as_done(self):
         self.is_completed = True
