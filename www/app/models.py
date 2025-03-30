@@ -1,9 +1,12 @@
 from django.db import models
+from django.core.validators import RegexValidator
 
 # Create your models here.
 
+filling_name_validator = RegexValidator(r"^[a-zA-z_]+$", "Only a-z, A-Z and Underscore ( _ ) characters are allowed")
+
 class Filling(models.Model):
-    name = models.CharField(max_length=100, primary_key=True)
+    name = models.CharField(max_length=100, primary_key=True, validators=[filling_name_validator])
     title = models.TextField(default="Untitled")
     is_available = models.BooleanField(default=True)
 
