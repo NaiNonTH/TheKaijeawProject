@@ -4,6 +4,7 @@
 
 ## สิ่งที่ต้องใช้
 * Python
+* Docker Hub หรือ Docker Desktop
 * git
 
 ## Run บนเครื่องตัวเอง
@@ -54,11 +55,27 @@ pip install -r requirements.txt
 5. Migrate เพื่อสร้างตารางและฐานข้อมูล
 
 ```ps1
-python manage.py migrate
+python ./www/manage.py migrate
 ```
 
 6. รัน server ด้วยคำสั่งนี้
 
 ```ps1
-python manage.py runserver
+python ./www/manage.py runserver
+```
+
+## รันด้วย Docker Compose
+
+**หมายเหตุ** จำเป็นต้องติดตั้ง Docker Desktop หรือ Docker Hub
+
+สามารถรันด้วยคำสั่ง
+
+```ps1
+docker-compose up -d
+```
+
+เมื่อใช้เสร็จ ให้ปิดด้วยคำสั่ง
+
+```ps1
+docker-compose down
 ```

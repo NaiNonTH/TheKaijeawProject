@@ -1,0 +1,51 @@
+services:
+  db:
+    image: mysql
+    container_name: django_mysql
+    ports:
+      - '3307:3306'
+    env_file:
+      - ./.env
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      timeout: 20s
+      retries: 10
+  web:
+    build:
+      context: .
+      dockerfile: ./Dockerfile.django
+    container_name: django_app
+    command: "/etc/scripts/entrypoint.sh"
+    env_file:
+      - ./.env
+    volumes:
+      - ./scripts/entrypoint.sh:/etc/scripts/entrypoint.sh
+      - ./www:/app
+      - staticfiles:/app/staticfiles
+    restart: always
+    depends_on:
+      db:
+        condition: service_healthy
+  nginx:
+    image: nginx:latest
+    container_name: django_nginx
+    volumes:
+      - ./scripts/nginx.sh:/etc/scripts/nginx.sh
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf.template
+      - staticfiles:/static
+    ports:
+      - "80:80"
+      - "443:443"
+    env_file:
+      - ./.env
+    command: /etc/scripts/nginx.sh
+    depends_on:
+      - web
+    restart: always
+
+volumes:
+  staticfiles:
+  static_volume:
+  mysql_data:
