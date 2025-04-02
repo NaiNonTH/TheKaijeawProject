@@ -10,6 +10,16 @@ class Filling(models.Model):
     title = models.TextField(default="Untitled")
     is_available = models.BooleanField(default=True)
 
+    def add(self, name, title):
+        new_filling = self.objects.create(name=name, title=title, is_available=True)
+        new_filling.save()
+
+    def modify(self, name, title):
+        self.objects.filter(name=name).update(name=name, title=title)
+
+    def delete(self, name):
+        self.objects.filter(name=name).delete()
+
 class Egg(models.Model):
     amount = models.PositiveSmallIntegerField(primary_key=True)
     price = models.PositiveSmallIntegerField()

@@ -1,0 +1,41 @@
+form {
+    max-width: 25rem;
+    margin: auto;
+}
+
+form div {
+    display: flex;
+    gap: 1ch;
+    margin: 1rem 0;
+}
+
+form input {
+    flex: 1;
+}
+
+button {
+    display: block;
+    margin-left: auto;
+}
+
+.sidenote {
+    padding: 0.5rem;
+    border: 1px solid;
+}
+
+.sidenote.error {
+    opacity: 1;
+    background: #fff0f0;
+    color: #a00;
+    
+    display: flex;
+    gap: 0.5ch;
+    align-items: center;
+}
+
+.sidenote.error::before {
+    content: "";
+    background: no-repeat url("../not-allowed.svg") center / contain;
+    width: 2em;
+    height: 2em;
+}

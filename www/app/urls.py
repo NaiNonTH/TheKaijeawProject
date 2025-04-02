@@ -13,5 +13,10 @@ urlpatterns = [
     path('restaurant/orders/mark-as-done', views.mark_order_as_done, name="mark_order_as_done"),
     path('restaurant/menus', views.restaurant_menu_page, name="restaurant_menu_page"),
     path('restaurant/menus/update-status', views.update_status, name="update_status"),
-    path('restaurant/statistics', views.statistics_page, name="statistics_page")
+    path('restaurant/statistics', views.statistics_page, name="statistics_page"),
+    path('restaurant/more', views.more_page, name="more_page"),
+    path('restaurant/restaurant', views.restaurant_config, name="restaurant_config"),
+    path('restaurant/change-restaurant-info', views.change_restaurant_info, name="change_restaurant_info"),
+    path('restaurant/password', views.password_config, name="password_config"),
+    path('restaurant/change-password', views.password_change, name="password_change"),
 ]

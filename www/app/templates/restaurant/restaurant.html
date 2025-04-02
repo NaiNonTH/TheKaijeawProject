@@ -1,0 +1,29 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    {% include '../metadata.html' %}
+    <link rel="stylesheet" href="{% static 'restaurant/main.css' %}">
+    <link rel="stylesheet" href="{% static 'restaurant/config.css' %}">
+    <title>Restaurant Configuration Page</title>
+</head>
+<body class="restaurant">
+    {% include '../header.html' %}
+    <main>
+        <h1>แก้ไขร้านอาหาร</h1>
+        {% if status == "-1" %}
+            <p class="sidenote error">
+                ข้อมูลที่ท่านกรอกไม่ถูกต้อง
+            </p>
+        {% endif %}
+        <form action="{% url 'change_restaurant_info' %}" method="POST">
+            {{ form }}
+            <div class="submit">
+                <button type="submit">เปลี่ยน</button>
+            </div>
+            {% csrf_token %}
+        </form>
+    </main>
+</body>
+</html>

@@ -2,13 +2,17 @@ from django.shortcuts import render, redirect
 from django.http import HttpRequest, HttpResponseRedirect
 
 from django.views.decorators.http import require_GET, require_POST
+
 from django.db.models import Q
 from django.db.models.aggregates import Sum, Count
-from django.contrib.auth import authenticate, login, logout
+
+from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
 from django.contrib.auth.decorators import user_passes_test
 
 from .models import Filling, Egg, Order, Restaurant
 from .utils import OrderBuilder, send_order_changes
+
+from . import forms
 
 from datetime import date
 import json
@@ -321,3 +325,82 @@ def statistics_page(request: HttpRequest):
     }
 
     return render(request, "restaurant/statistics.html", context)
+
+@user_passes_test(user_check, login_url='/restaurant/login/')
+def more_page(request: HttpRequest):
+    response = render(request, "restaurant/morepage.html", {
+        "status": request.COOKIES.get("status", 0)
+    })
+    response.delete_cookie("status")
+
+    return response
+
+@user_passes_test(user_check, login_url='/restaurant/login/')
+def restaurant_config(request: HttpRequest):
+    restaurant = Restaurant.objects.last()
+    form = forms.RestaurantForm(instance=restaurant)
+
+    response = render(request, "restaurant/restaurant.html", {
+        "form": form,
+        "status": request.COOKIES.get("status", 0)
+    })
+    response.delete_cookie("status")
+
+    return response
+
+@user_passes_test(user_check, login_url='/restaurant/login/')
+@require_POST
+def change_restaurant_info(request: HttpRequest):
+    restaurant = Restaurant.objects.last()
+    form = forms.RestaurantForm(request.POST)
+    
+
+    if form.is_valid():
+        restaurant.queue_capacity = request.POST["queue_capacity"]
+        restaurant.max_fillings = request.POST["max_fillings"]
+        restaurant.save()
+        
+        response = redirect("/restaurant/more")
+        response.set_cookie("status", 1)
+    else:
+        response = redirect("/restaurant/restaurant")
+        response.set_cookie("status", -1)
+
+    return response
+
+@user_passes_test(user_check, login_url='/restaurant/login/')
+def password_config(request: HttpRequest):
+    context = {
+        "status": request.COOKIES.get("status", 0)
+    }
+
+    response = render(request, "restaurant/password.html", context)
+    response.delete_cookie("status")
+
+    return response
+
+@user_passes_test(user_check, login_url='/restaurant/login/')
+@require_POST
+def password_change(request:HttpRequest):
+    current_password = request.POST['current-password']
+
+    response = redirect("/restaurant/password")
+
+    if request.user.check_password(current_password):
+        new_password_one = request.POST['new-password']
+        new_password_two = request.POST['new-password-confirm']
+
+        if (new_password_one == new_password_two):
+            request.user.set_password(new_password_one)
+            request.user.save()
+            update_session_auth_hash(request, request.user)
+
+            response = redirect("/restaurant/more")
+            response.set_cookie("status", 1)
+        else:
+            response.set_cookie("status", -1)
+
+    else:
+        response.set_cookie("status", -2)
+
+    return response

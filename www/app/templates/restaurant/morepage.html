@@ -1,0 +1,40 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    {% include '../metadata.html' %}
+    <link rel="stylesheet" href="{% static 'restaurant/main.css' %}">
+    <link rel="stylesheet" href="{% static 'restaurant/more.css' %}">
+    <title>Configuration Page</title>
+</head>
+<body class="restaurant">
+    {% include '../header.html' %}
+    <main>
+        <h1>เมนูเพิ่มเติม</h1>
+        {% if status == "1" %}
+            <p class="sidenote success">
+                แก้ไขข้อมูลเรียบร้อย
+            </p>
+        {% endif %}
+        <nav>
+            <ul class="nav-list">
+                <li><a href="#"><span>แก้ไขไส้</span></a></li>
+                <li><a href="#"><span>แก้ไขจำนวนไข่</span></a></li>
+                <li><a href="{% url 'restaurant_config' %}"><span>แก้ไขข้อมูลร้าน</span></a></li>
+                <li><a href="{% url 'password_config' %}"><span>เปลี่ยนรหัสผ่าน</span></a></li>
+                {% comment '' %}
+                <li><a href="{% url 'fillings_config' %}">แก้ไขไส้</a></li>
+                <li><a href="{% url 'eggs_config' %}">แก้ไขจำนวนไข่</a></li>
+                <li><a href="{% url 'restaurant_config' %}">แก้ไขข้อมูลร้าน</a></li>
+                {% endcomment %}
+            </ul>
+        </nav>
+        <form method="POST" action="{% url 'logout' %}">
+            <button type="submit">ล็อกเอาท์</button>
+            {% csrf_token %}
+        </form>
+    </main>
+    {% include '../restaurant-nav.html' %}
+</body>
+</html>

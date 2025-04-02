@@ -1,0 +1,53 @@
+main > * {
+    margin: 1rem 0;
+}
+
+.nav-list {
+    padding: 0;
+}
+
+.nav-list li {
+    display: block;
+    border-bottom: 1px solid var(--body-bg-lighter);
+}
+
+.nav-list a {
+    display: flex;
+    align-items: center;
+    gap: 1ch;
+
+    padding: 0.5rem;
+    color: inherit;
+    text-decoration: none;
+}
+
+.nav-list a:hover {
+    background: var(--body-bg-lighter);
+}
+
+.nav-list a span {
+    flex: 1;
+}
+
+.nav-list a::after {
+    content: "►";
+}
+
+form {
+    text-align: right;
+}
+
+.sidenote {
+    padding: 0.5rem;
+    border: 1px solid;
+}
+
+.sidenote.success {
+    opacity: 1;
+    background: #caffca;
+    border-color: #388a38;
+    
+    display: flex;
+    gap: 0.5ch;
+    align-items: center;
+}

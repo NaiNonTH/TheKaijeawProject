@@ -1,4 +1,4 @@
-<nav>
+<nav class="res-nav">
     <ul>
         {% with this_url=request.resolver_match.url_name %}
             <li {% if this_url == 'orders_page' %}aria-current="true"{% endif %}>
@@ -19,14 +19,11 @@
                     <span>สถิติ</span>
                 </a>
             </li>
-            <li>
-                <form method="POST" action="{% url 'logout' %}">
-                    <button type="submit">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="800" height="800" viewBox="0 0 52 52" xml:space="preserve" style="fill:var(--theme-cl);""><path d="M21 48.5v-3c0-.8-.7-1.5-1.5-1.5h-10c-.8 0-1.5-.7-1.5-1.5v-33C8 8.7 8.7 8 9.5 8h10c.8 0 1.5-.7 1.5-1.5v-3c0-.8-.7-1.5-1.5-1.5H6C3.8 2 2 3.8 2 6v40c0 2.2 1.8 4 4 4h13.5c.8 0 1.5-.7 1.5-1.5"/><path d="M49.6 27c.6-.6.6-1.5 0-2.1L36.1 11.4c-.6-.6-1.5-.6-2.1 0l-2.1 2.1c-.6.6-.6 1.5 0 2.1l5.6 5.6c.6.6.2 1.7-.7 1.7H15.5c-.8 0-1.5.6-1.5 1.4v3c0 .8.7 1.6 1.5 1.6h21.2c.9 0 1.3 1.1.7 1.7l-5.6 5.6c-.6.6-.6 1.5 0 2.1l2.1 2.1c.6.6 1.5.6 2.1 0z"/></svg>
-                        <span>ล็อกเอาท์</span>
-                    </button>
-                    {% csrf_token %}
-                </form>
+            <li {% if this_url == 'more_page' %}aria-current="true"{% endif %}>
+                <a href="{% url 'more_page' %}">
+                    <svg width="800" height="800" viewBox="0 0 48 48" fill="#fff" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="24" r="4" /><circle cx="24" cy="24" r="4" /><circle cx="36" cy="24" r="4" /></svg>
+                    <span>เพิ่มเติม</span>
+                </a>
             </li>
         {% endwith %}
     </ul>
